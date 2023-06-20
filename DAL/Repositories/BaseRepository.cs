@@ -1,4 +1,5 @@
 ﻿using DAL.Context;
+using DAL.Entities;
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,6 +47,11 @@ namespace DAL.Repositories
             dbContext.Set<T>().Remove(entity);
             await dbContext.SaveChangesAsync();
             return true;
+        }
+
+        virtual public async Task<T?> GetDetailsAsync(int id)
+        {
+            return await this.GetByIdAsync(id);
         }
     }
 }

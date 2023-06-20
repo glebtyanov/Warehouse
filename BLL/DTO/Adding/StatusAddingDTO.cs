@@ -2,18 +2,9 @@
 
 namespace BLL.DTO.Adding
 {
-    public class OrderAddingDTO
+    public class StatusAddingDTO
     {
         [Required]
-        public int CustomerId { get; set; }
-
-        [Required]
-        public DateTime OrderDate { get; set; }
-
-        [Required]
-        public double ProductAmount { get; set; }
-
-        [Required]
-        public int WorkerId { get; set; }
+        public string Name { get; set; }
     }
 }

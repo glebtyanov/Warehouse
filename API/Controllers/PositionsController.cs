@@ -1,5 +1,5 @@
-using BLL.DTO;
 using BLL.DTO.Adding;
+using BLL.DTO.Plain;
 using BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,56 +7,53 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class OrdersController : ControllerBase
+    public class PositionsController : ControllerBase
     {
-        private readonly OrderService orderService;
+        private readonly PositionService positionService;
 
-        public OrdersController(OrderService orderService)
+        public PositionsController(PositionService positionService)
         {
-            this.orderService = orderService;
+            this.positionService = positionService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await orderService.GetAllAsync());
+            return Ok(await positionService.GetAllAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var order = await orderService.GetByIdAsync(id);
-            if (order == null)
+            var position = await positionService.GetByIdAsync(id);
+            if (position == null)
                 return NotFound();
 
-            return Ok(order);
+            return Ok(position);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(OrderAddingDTO orderToAdd)
+        public async Task<IActionResult> Add(PositionAddingDTO positionToAdd)
         {
-            var addedOrder = await orderService.AddAsync(orderToAdd);
+            var addedPosition = await positionService.AddAsync(positionToAdd);
 
-            if (addedOrder is null)
-                return BadRequest("Order creation failed.");
-
-            return CreatedAtAction(nameof(GetById), new {id = addedOrder.OrderId}, addedOrder);
+            return CreatedAtAction(nameof(GetById), new { id = addedPosition.PositionId }, addedPosition);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(OrderDTO orderToUpdate)
+        public async Task<IActionResult> Update(PositionPlainDTO positionToUpdate)
         {
-            var updatedOrder = await orderService.UpdateAsync(orderToUpdate);
-            if (updatedOrder == null)
+            var updatedPosition = await positionService.UpdateAsync(positionToUpdate);
+            if (updatedPosition == null)
                 return NotFound();
 
-            return Ok(updatedOrder);
+            return Ok(updatedPosition);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var isDeleted = await orderService.DeleteAsync(id);
+            var isDeleted = await positionService.DeleteAsync(id);
             if (!isDeleted)
                 return NotFound();
 

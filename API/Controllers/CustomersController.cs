@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using BLL.DTO;
 using BLL.DTO.Adding;
 using BLL.Services;
+using BLL.DTO.Plain;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -41,7 +41,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCustomerAsync(CustomerDTO customerToUpdate)
+        public async Task<IActionResult> UpdateCustomerAsync(CustomerPlainDTO customerToUpdate)
         {
             var updatedCustomer = await customerService.UpdateAsync(customerToUpdate);
 

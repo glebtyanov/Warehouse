@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BLL.DTO
+namespace BLL.DTO.Plain
 {
-    public class DepartmentDTO
+    public class DepartmentPlainDTO
     {
         [Required]
         public int DepartmentId { get; set; }

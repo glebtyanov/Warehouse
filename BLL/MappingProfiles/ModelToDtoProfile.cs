@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.DTO;
 using BLL.DTO.Adding;
+using BLL.DTO.Plain;
 using DAL.Entities;
 
 namespace BLL.MappingProfiles
@@ -10,10 +11,10 @@ namespace BLL.MappingProfiles
         public ModelToDtoProfile()
         {
             CreateMap<CustomerAddingDTO, Customer>().ReverseMap();
-            CreateMap<CustomerDTO, Customer>().ReverseMap();
+            CreateMap<CustomerPlainDTO, Customer>().ReverseMap();
 
             CreateMap<DepartmentAddingDTO, Department>().ReverseMap();
-            CreateMap<DepartmentDTO, Department>().ReverseMap();
+            CreateMap<DepartmentPlainDTO, Department>().ReverseMap();
 
             CreateMap<OrderAddingDTO, Order>().ReverseMap();
             CreateMap<OrderDTO, Order>().ReverseMap();

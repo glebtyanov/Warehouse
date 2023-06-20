@@ -1,5 +1,5 @@
-﻿using BLL.DTO;
-using BLL.DTO.Adding;
+﻿using BLL.DTO.Adding;
+using BLL.DTO.Plain;
 using BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +40,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(DepartmentDTO departmentToUpdate)
+        public async Task<IActionResult> Update(DepartmentPlainDTO departmentToUpdate)
         {
             var updatedDepartment = await departmentService.UpdateAsync(departmentToUpdate);
             if (updatedDepartment == null)

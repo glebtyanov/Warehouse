@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BLL.DTO.Adding
+namespace BLL.DTO.Plain
 {
-    public class TransactionAddingDTO
+    public class TransactionPlainDTO
     {
+        [Required]
+        public int TransactionId { get; set; }
+
         [Required]
         public int OrderId { get; set; }
 

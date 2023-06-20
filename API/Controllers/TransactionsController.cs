@@ -1,62 +1,62 @@
-using BLL.DTO;
 using BLL.DTO.Adding;
 using BLL.Services;
 using Microsoft.AspNetCore.Mvc;
+using BLL.DTO.Plain;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class OrdersController : ControllerBase
+    public class TransactionsController : ControllerBase
     {
-        private readonly OrderService orderService;
+        private readonly TransactionService transactionService;
 
-        public OrdersController(OrderService orderService)
+        public TransactionsController(TransactionService transactionService)
         {
-            this.orderService = orderService;
+            this.transactionService = transactionService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await orderService.GetAllAsync());
+            return Ok(await transactionService.GetAllAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var order = await orderService.GetByIdAsync(id);
-            if (order == null)
+            var transaction = await transactionService.GetByIdAsync(id);
+            if (transaction == null)
                 return NotFound();
 
-            return Ok(order);
+            return Ok(transaction);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(OrderAddingDTO orderToAdd)
+        public async Task<IActionResult> Add(TransactionAddingDTO transactionToAdd)
         {
-            var addedOrder = await orderService.AddAsync(orderToAdd);
+            var addedTransaction = await transactionService.AddAsync(transactionToAdd);
 
-            if (addedOrder is null)
-                return BadRequest("Order creation failed.");
+            if (addedTransaction is null)
+                return BadRequest("Transaction creation failed.");
 
-            return CreatedAtAction(nameof(GetById), new {id = addedOrder.OrderId}, addedOrder);
+            return CreatedAtAction(nameof(GetById), new { id = addedTransaction.TransactionId }, addedTransaction);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(OrderDTO orderToUpdate)
+        public async Task<IActionResult> Update(TransactionPlainDTO transactionToUpdate)
         {
-            var updatedOrder = await orderService.UpdateAsync(orderToUpdate);
-            if (updatedOrder == null)
+            var updatedTransaction = await transactionService.UpdateAsync(transactionToUpdate);
+            if (updatedTransaction == null)
                 return NotFound();
 
-            return Ok(updatedOrder);
+            return Ok(updatedTransaction);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var isDeleted = await orderService.DeleteAsync(id);
+            var isDeleted = await transactionService.DeleteAsync(id);
             if (!isDeleted)
                 return NotFound();
 

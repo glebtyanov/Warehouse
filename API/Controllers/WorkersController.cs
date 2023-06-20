@@ -1,5 +1,5 @@
-using BLL.DTO;
 using BLL.DTO.Adding;
+using BLL.DTO.Plain;
 using BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,56 +7,56 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class OrdersController : ControllerBase
+    public class WorkersController : ControllerBase
     {
-        private readonly OrderService orderService;
+        private readonly WorkerService workerService;
 
-        public OrdersController(OrderService orderService)
+        public WorkersController(WorkerService workerService)
         {
-            this.orderService = orderService;
+            this.workerService = workerService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await orderService.GetAllAsync());
+            return Ok(await workerService.GetAllAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var order = await orderService.GetByIdAsync(id);
-            if (order == null)
+            var worker = await workerService.GetByIdAsync(id);
+            if (worker == null)
                 return NotFound();
 
-            return Ok(order);
+            return Ok(worker);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(OrderAddingDTO orderToAdd)
+        public async Task<IActionResult> Add(WorkerAddingDTO workerToAdd)
         {
-            var addedOrder = await orderService.AddAsync(orderToAdd);
+            var addedWorker = await workerService.AddAsync(workerToAdd);
 
-            if (addedOrder is null)
-                return BadRequest("Order creation failed.");
+            if (addedWorker is null)
+                return BadRequest("Worker creation failed.");
 
-            return CreatedAtAction(nameof(GetById), new {id = addedOrder.OrderId}, addedOrder);
+            return CreatedAtAction(nameof(GetById), new { id = addedWorker.WorkerId }, addedWorker);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(OrderDTO orderToUpdate)
+        public async Task<IActionResult> Update(WorkerPlainDTO workerToUpdate)
         {
-            var updatedOrder = await orderService.UpdateAsync(orderToUpdate);
-            if (updatedOrder == null)
+            var updatedWorker = await workerService.UpdateAsync(workerToUpdate);
+            if (updatedWorker == null)
                 return NotFound();
 
-            return Ok(updatedOrder);
+            return Ok(updatedWorker);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var isDeleted = await orderService.DeleteAsync(id);
+            var isDeleted = await workerService.DeleteAsync(id);
             if (!isDeleted)
                 return NotFound();
 

@@ -1,60 +1,47 @@
 ﻿using AutoMapper;
-using BLL.DTO;
-using BLL.DTO.Adding;
 using DAL.Entities;
 using DAL.UnitsOfWork;
+using BLL.DTO.Plain;
 
 namespace BLL.Services
 {
-    public class OrderService
+    public class WorkerService
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
-
-        public OrderService(IUnitOfWork unitOfWork, IMapper mapper)
+        public WorkerService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
 
-        public async Task<List<OrderDTO>> GetAllAsync()
+        public async Task<List<WorkerPlainDTO>> GetAllAsync()
         {
-            var ordersToMap = await unitOfWork.OrderRepository.GetAllAsync();
+            var workersToMap = await unitOfWork.WorkerRepository.GetAllAsync();
 
-            return ordersToMap.Select(mapper.Map<OrderDTO>).ToList();
+            return workersToMap.Select(mapper.Map<WorkerPlainDTO>).ToList();
         }
 
-        public async Task<OrderDTO?> GetByIdAsync(int id)
+        public async Task<WorkerPlainDTO?> GetByIdAsync(int id)
         {
-            return mapper.Map<OrderDTO>(await unitOfWork.OrderRepository.GetByIdAsync(id));
+            return mapper.Map<WorkerPlainDTO>(await unitOfWork.WorkerRepository.GetByIdAsync(id));
         }
 
-        public async Task<OrderDTO?> AddAsync(OrderAddingDTO orderToAdd)
+        public async Task<WorkerPlainDTO?> UpdateAsync(WorkerPlainDTO workerToUpdate)
         {
-            if (await unitOfWork.WorkerRepository.GetByIdAsync(orderToAdd.WorkerId) is null
-                || await unitOfWork.CustomerRepository.GetByIdAsync(orderToAdd.CustomerId) is null)
+            if (await unitOfWork.PositionRepository.GetByIdAsync(workerToUpdate.PositionId) is null)
                 return null;
 
-            var addedOrder = await unitOfWork.OrderRepository.AddAsync(mapper.Map<Order>(orderToAdd));
+            var updatedWorker = await unitOfWork.WorkerRepository.UpdateAsync(mapper.Map<Worker>(workerToUpdate));
 
-            return mapper.Map<OrderDTO>(addedOrder);
+            return mapper.Map<WorkerPlainDTO?>(updatedWorker);
         }
 
-        public async Task<OrderDTO?> UpdateAsync(OrderDTO orderToUpdate)
+        public async Task<bool> DeleteAsync(int workerId)
         {
-            if (await unitOfWork.WorkerRepository.GetByIdAsync(orderToUpdate.WorkerId) is null
-                || await unitOfWork.CustomerRepository.GetByIdAsync(orderToUpdate.CustomerId) is null)
-                return null;
-
-            var updatedOrder = await unitOfWork.OrderRepository.UpdateAsync(mapper.Map<Order>(orderToUpdate));
-
-            return mapper.Map<OrderDTO?>(updatedOrder);
+            return await unitOfWork.WorkerRepository.DeleteAsync(workerId);
         }
 
-        public async Task<bool> DeleteAsync(int orderId)
-        {
-            return await unitOfWork.OrderRepository.DeleteAsync(orderId);
-        }
     }
 }

@@ -11,5 +11,7 @@
         Task<T?> UpdateAsync(T updateRequest);
 
         Task<bool> DeleteAsync(int id);
+
+        Task<T?> GetDetailsAsync(int id);
     }
 }

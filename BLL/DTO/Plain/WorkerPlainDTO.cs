@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BLL.DTO.Adding
+namespace BLL.DTO.Plain
 {
-    public class WorkerAddingDTO
+    public class WorkerPlainDTO
     {
+        [Required]
+        public int WorkerId { get; set; }
+
         [Required]
         public string FirstName { get; set; }
 
@@ -17,13 +20,10 @@ namespace BLL.DTO.Adding
         public string ContactNumber { get; set; }
 
         [EmailAddress]
-        public string? Email { get; set; }
+        public string Email { get; set; }
 
         [Required]
         public int PositionId { get; set; }
-
-        [Required]
-        public string Password { get; set; }
 
         [Required]
         public DateTime HireDate { get; set; }

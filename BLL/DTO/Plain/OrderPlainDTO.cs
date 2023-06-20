@@ -1,15 +1,11 @@
-﻿using DAL.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BLL.DTO
+namespace BLL.DTO.Plain
 {
-    public class OrderDTO
+    public class OrderPlainDTO
     {
         [Required]
         public int OrderId { get; set; }
-
-        [Required]
-        public int CustomerId { get; set; }
 
         [Required]
         public DateTime OrderDate { get; set; }

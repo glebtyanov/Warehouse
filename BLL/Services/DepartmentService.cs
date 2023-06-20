@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using BLL.DTO;
 using BLL.DTO.Adding;
+using BLL.DTO.Plain;
 using DAL.Entities;
 using DAL.UnitsOfWork;
 
@@ -18,30 +18,30 @@ namespace BLL.Services
             this.mapper = mapper;
         }
 
-        public async Task<List<DepartmentDTO>> GetAllAsync()
+        public async Task<List<DepartmentPlainDTO>> GetAllAsync()
         {
             var departmentsToMap = await unitOfWork.DepartmentRepository.GetAllAsync();
 
-            return departmentsToMap.Select(mapper.Map<DepartmentDTO>).ToList();
+            return departmentsToMap.Select(mapper.Map<DepartmentPlainDTO>).ToList();
         }
 
-        public async Task<DepartmentDTO?> GetByIdAsync(int id)
+        public async Task<DepartmentPlainDTO?> GetByIdAsync(int id)
         {
-            return mapper.Map<DepartmentDTO>(await unitOfWork.DepartmentRepository.GetByIdAsync(id));
+            return mapper.Map<DepartmentPlainDTO>(await unitOfWork.DepartmentRepository.GetByIdAsync(id));
         }
 
-        public async Task<DepartmentDTO> AddAsync(DepartmentAddingDTO departmentToAdd)
+        public async Task<DepartmentPlainDTO> AddAsync(DepartmentAddingDTO departmentToAdd)
         {
             var addedDepartment = await unitOfWork.DepartmentRepository.AddAsync(mapper.Map<Department>(departmentToAdd));
 
-            return mapper.Map<DepartmentDTO>(addedDepartment);
+            return mapper.Map<DepartmentPlainDTO>(addedDepartment);
         }
 
-        public async Task<DepartmentDTO?> UpdateAsync(DepartmentDTO departmentToUpdate)
+        public async Task<DepartmentPlainDTO?> UpdateAsync(DepartmentPlainDTO departmentToUpdate)
         {
             var updatedDepartment = await unitOfWork.DepartmentRepository.UpdateAsync(mapper.Map<Department>(departmentToUpdate));
 
-            return mapper.Map<DepartmentDTO?>(updatedDepartment);
+            return mapper.Map<DepartmentPlainDTO?>(updatedDepartment);
         }
 
         public async Task<bool> DeleteAsync(int departmentId)

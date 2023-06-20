@@ -1,5 +1,5 @@
-using BLL.DTO;
 using BLL.DTO.Adding;
+using BLL.DTO.Plain;
 using BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,56 +7,53 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class OrdersController : ControllerBase
+    public class ProductsController : ControllerBase
     {
-        private readonly OrderService orderService;
+        private readonly ProductService productService;
 
-        public OrdersController(OrderService orderService)
+        public ProductsController(ProductService productService)
         {
-            this.orderService = orderService;
+            this.productService = productService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await orderService.GetAllAsync());
+            return Ok(await productService.GetAllAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var order = await orderService.GetByIdAsync(id);
-            if (order == null)
+            var product = await productService.GetByIdAsync(id);
+            if (product == null)
                 return NotFound();
 
-            return Ok(order);
+            return Ok(product);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(OrderAddingDTO orderToAdd)
+        public async Task<IActionResult> Add(ProductAddingDTO productToAdd)
         {
-            var addedOrder = await orderService.AddAsync(orderToAdd);
+            var addedProduct = await productService.AddAsync(productToAdd);
 
-            if (addedOrder is null)
-                return BadRequest("Order creation failed.");
-
-            return CreatedAtAction(nameof(GetById), new {id = addedOrder.OrderId}, addedOrder);
+            return CreatedAtAction(nameof(GetById), new { id = addedProduct.ProductId }, addedProduct);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(OrderDTO orderToUpdate)
+        public async Task<IActionResult> Update(ProductPlainDTO productToUpdate)
         {
-            var updatedOrder = await orderService.UpdateAsync(orderToUpdate);
-            if (updatedOrder == null)
+            var updatedProduct = await productService.UpdateAsync(productToUpdate);
+            if (updatedProduct == null)
                 return NotFound();
 
-            return Ok(updatedOrder);
+            return Ok(updatedProduct);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var isDeleted = await orderService.DeleteAsync(id);
+            var isDeleted = await productService.DeleteAsync(id);
             if (!isDeleted)
                 return NotFound();
 
