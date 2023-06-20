@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BLL.DTO.Adding
+namespace BLL.DTO
 {
-    public class DepartmentAddingDTO
+    public class DepartmentDTO
     {
+        [Required]
+        public int DepartmentId { get; set; }
+
         [Required]
         public string Name { get; set; }
 

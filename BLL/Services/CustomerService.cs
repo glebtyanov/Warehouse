@@ -25,9 +25,9 @@ namespace BLL.Services
             return customersToMap.Select(mapper.Map<CustomerDTO>).ToList();
         }
 
-        public async Task<CustomerDTO?> GetByIdAsync(int customerId)
+        public async Task<CustomerDTO?> GetByIdAsync(int id)
         {
-            return mapper.Map<CustomerDTO>(await unitOfWork.CustomerRepository.GetByIdAsync(customerId));
+            return mapper.Map<CustomerDTO>(await unitOfWork.CustomerRepository.GetByIdAsync(id));
         }
 
         public async Task<CustomerDTO> AddAsync(CustomerAddingDTO customerToAdd)

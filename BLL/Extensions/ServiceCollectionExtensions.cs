@@ -9,6 +9,8 @@ namespace BLL.Extensions
         public static IServiceCollection AddBusinessLogicLayerServices(this IServiceCollection services)
         {
             services.AddScoped<CustomerService, CustomerService>();
+            services.AddScoped<DepartmentService, DepartmentService>();
+            services.AddScoped<OrderService, OrderService>();
 
             services.AddAutoMapper(typeof(ModelToDtoProfile));
 

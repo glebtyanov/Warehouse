@@ -28,9 +28,8 @@ namespace API.Controllers
         public async Task<IActionResult> GetCustomerByIdAsync(int id)
         {
             var foundCustomer = await customerService.GetByIdAsync(id);
-
             if (foundCustomer is null)
-                return NotFound("Customer not found");
+                return NotFound();
 
             return Ok(foundCustomer);
         }

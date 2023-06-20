@@ -1,9 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DAL.Entities;
+using System.ComponentModel.DataAnnotations;
 
-namespace BLL.DTO.Adding
+namespace BLL.DTO
 {
-    public class OrderAddingDTO
+    public class OrderDTO
     {
+        [Required]
+        public int OrderId { get; set; }
+
         [Required]
         public int CustomerId { get; set; }
 
