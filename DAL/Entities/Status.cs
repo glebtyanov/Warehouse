@@ -7,6 +7,6 @@
         public string? Name { get; set; }
 
         // refered by many
-        public List<Order>? Orders { get; set; }
+        public ICollection<Order>? Orders { get; set; }
     }
 }

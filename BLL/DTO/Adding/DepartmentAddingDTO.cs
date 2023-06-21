@@ -8,9 +8,12 @@ namespace BLL.DTO.Adding
         public string Name { get; set; }
 
         [Required]
-        public string Location { get; set; }
+        public string Address { get; set; }
 
-        [Required]
-        public int Capacity { get; set; }
+        [Phone]
+        public string? ContactNumber { get; set; }
+
+        [EmailAddress]
+        public string? Email { get; set; }
     }
 }

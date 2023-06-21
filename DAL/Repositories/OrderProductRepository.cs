@@ -10,17 +10,5 @@ namespace DAL.Repositories
         {
 
         }
-        public async override Task<OrderProduct?> GetByIdAsync(int id)
-        {
-            return null;
-        }
-
-        public bool Exists(OrderProduct orderProduct)
-        {
-            return dbContext.OrderProducts
-                .Where(dw => dw.ProductId == orderProduct.ProductId
-                && dw.OrderId == orderProduct.OrderId)
-                .Count() > 0;
-        }
     }
 }

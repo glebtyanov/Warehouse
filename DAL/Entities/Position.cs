@@ -7,6 +7,6 @@
         public string? Name { get; set; }
 
         // refered by many
-        public List<Worker>? Workers { get; set; }
+        public ICollection<Worker>? Workers { get; set; }
     }
 }

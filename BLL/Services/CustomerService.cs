@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using BLL.DTO;
 using BLL.DTO.Adding;
-using BLL.DTO.Plain;
 using DAL.Entities;
 using DAL.UnitsOfWork;
 
@@ -18,35 +18,30 @@ namespace BLL.Services
             this.mapper = mapper;
         }
 
-        public async Task<List<CustomerPlainDTO>> GetAllAsync()
+        public async Task<List<CustomerDTO>> GetAllAsync()
         {
             var customersToMap = await unitOfWork.CustomerRepository.GetAllAsync();
 
-            return customersToMap.Select(mapper.Map<CustomerPlainDTO>).ToList();
+            return customersToMap.Select(mapper.Map<CustomerDTO>).ToList();
         }
 
-        public async Task<CustomerPlainDTO?> GetByIdAsync(int id)
+        public async Task<CustomerDTO?> GetByIdAsync(int customerId)
         {
-            return mapper.Map<CustomerPlainDTO>(await unitOfWork.CustomerRepository.GetByIdAsync(id));
+            return mapper.Map<CustomerDTO>(await unitOfWork.CustomerRepository.GetByIdAsync(customerId));
         }
 
-        public async Task<CustomerDetailsDTO?> GetDetailsByIdAsync(int id)
-        {
-            return mapper.Map<CustomerDetailsDTO>(await unitOfWork.CustomerRepository.GetDetailsAsync(id));
-        }
-
-        public async Task<CustomerPlainDTO> AddAsync(CustomerAddingDTO customerToAdd)
+        public async Task<CustomerDTO> AddAsync(CustomerAddingDTO customerToAdd)
         {
             var addedCustomer = await unitOfWork.CustomerRepository.AddAsync(mapper.Map<Customer>(customerToAdd));
 
-            return mapper.Map<CustomerPlainDTO>(addedCustomer);
+            return mapper.Map<CustomerDTO>(addedCustomer);
         }
 
-        public async Task<CustomerPlainDTO?> UpdateAsync(CustomerPlainDTO customerToUpdate)
+        public async Task<CustomerDTO?> UpdateAsync(CustomerDTO customerToUpdate)
         {
             var updatedCustomer = await unitOfWork.CustomerRepository.UpdateAsync(mapper.Map<Customer>(customerToUpdate));
 
-            return mapper.Map<CustomerPlainDTO?>(updatedCustomer);
+            return mapper.Map<CustomerDTO?>(updatedCustomer);
         }
 
         public async Task<bool> DeleteAsync(int customerId)

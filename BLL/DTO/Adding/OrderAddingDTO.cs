@@ -5,18 +5,15 @@ namespace BLL.DTO.Adding
     public class OrderAddingDTO
     {
         [Required]
-        public int CustomerId { get; set; }
+        public string Name { get; set; }
 
         [Required]
-        public DateTime OrderDate { get; set; }
+        public string Address { get; set; }
 
-        [Required]
-        public double ProductAmount { get; set; }
+        [Phone]
+        public string? ContactNumber { get; set; }
 
-        [Required]
-        public int WorkerId { get; set; }
-
-        [Required]
-        public int StatusId { get; set; } = 1;
+        [EmailAddress]
+        public string? Email { get; set; }
     }
 }
