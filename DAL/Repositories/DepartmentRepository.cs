@@ -14,7 +14,15 @@ namespace DAL.Repositories
 
         public override async Task<Department?> GetDetailsAsync(int id)
         {
-            return await ((DbSet<Department>)dbContext.Departments.Include(department => department.Workers)).FindAsync(id);
+            var departments = dbContext.Departments
+                .Where(department => department.DepartmentId == id);
+
+            if (!departments.Any())
+                return null;
+
+            return await departments
+                .Include(department => department.Workers)
+                .FirstAsync();
         }
     }
 }

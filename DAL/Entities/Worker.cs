@@ -26,8 +26,8 @@
         public Position? Position { get; set; }
 
         // refered by many
-        public ICollection<Order>? Orders { get; set; }
+        public List<Order>? Orders { get; set; }
 
-        public ICollection<Department>? Departments { get; set; }
+        public List<Department>? Departments { get; set; }
     }
 }

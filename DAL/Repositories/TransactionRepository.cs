@@ -15,9 +15,15 @@ namespace DAL.Repositories
 
         public override async Task<Transaction?> GetDetailsAsync(int id)
         {
-            return await ((DbSet<Transaction>)dbContext.Transactions
+            var transactions = dbContext.Transactions
+                .Where(transaction => transaction.TransactionId == id);
+
+            if (!transactions.Any())
+                return null;
+
+            return await transactions
                 .Include(transaction => transaction.Order)
-                ).FindAsync(id);
+                .FirstAsync();
         }
     }
 }

@@ -17,7 +17,10 @@ namespace BLL.MappingProfiles
             CreateMap<DepartmentPlainDTO, Department>().ReverseMap();
 
             CreateMap<OrderAddingDTO, Order>().ReverseMap();
-            CreateMap<OrderDTO, Order>().ReverseMap();
+            CreateMap<OrderPlainDTO, Order>().ReverseMap();
+
+            CreateMap<PositionAddingDTO, Position>().ReverseMap();
+            CreateMap<PositionPlainDTO, Position>().ReverseMap();
         }
     }
 }

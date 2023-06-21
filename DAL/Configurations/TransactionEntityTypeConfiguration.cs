@@ -17,8 +17,7 @@ namespace DAL.Configurations
                 .HasMaxLength(50);
 
             builder.HasOne(t => t.Order)
-                .WithOne(o => o.Transaction)
-                .HasForeignKey<Transaction>(t => t.OrderId);
+                .WithOne(o => o.Transaction);
         }
     }
 }

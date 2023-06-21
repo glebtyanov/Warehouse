@@ -26,7 +26,9 @@ namespace BLL.Services
 
         public async Task<PositionPlainDTO?> GetByIdAsync(int id)
         {
-            return mapper.Map<PositionPlainDTO>(await unitOfWork.PositionRepository.GetByIdAsync(id));
+            //return mapper.Map<PositionPlainDTO>(await unitOfWork.PositionRepository.GetByIdAsync(id));
+            return mapper.Map<PositionPlainDTO>(await unitOfWork.PositionRepository.GetDetailsAsync(id));
+
         }
 
         public async Task<PositionPlainDTO> AddAsync(PositionAddingDTO positionToAdd)

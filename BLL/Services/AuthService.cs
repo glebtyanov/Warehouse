@@ -25,13 +25,13 @@ namespace BLL.Services
         }
 
 
-        public async Task<string> Register(WorkerAddingDTO workerRegistrationRequest)
+        public async Task<bool> Register(WorkerAddingDTO workerRegistrationRequest)
         {
             var workers = await unitOfWork.WorkerRepository.GetAllAsync();
 
             if (workers.Any(u => u.Email.ToLower() == workerRegistrationRequest.Email.Trim().ToLower()))
             {
-                return "Email is taken";
+                return false;
             }
 
             CreatePasswordHash(workerRegistrationRequest.Password.Trim().ToLower(), out byte[] passwordHash, out byte[] passwordSalt);
@@ -43,7 +43,7 @@ namespace BLL.Services
 
             await unitOfWork.WorkerRepository.AddAsync(workerToAdd);
 
-            return "User successfully registered";
+            return true;
         }
 
         public async Task<string> Login(WorkerLoginDTO loginRequest)
@@ -104,7 +104,8 @@ namespace BLL.Services
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, worker.Position.Name)
+                new Claim(ClaimTypes.Role, worker.Position.Name),
+                new Claim("id", worker.WorkerId.ToString())
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(

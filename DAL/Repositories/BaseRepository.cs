@@ -16,7 +16,7 @@ namespace DAL.Repositories
 
         public async Task<List<T>> GetAllAsync()
         {
-            return await dbContext.Set<T>().ToListAsync();
+            return await dbContext.Set<T>().ToListAsync(CancellationToken.None);
         }
 
         public async Task<T?> GetByIdAsync(int id)
@@ -33,6 +33,9 @@ namespace DAL.Repositories
 
         public async Task<T?> UpdateAsync(T entity)
         {
+            if (!dbContext.Set<T>().Contains(entity))
+                return null;
+
             dbContext.Entry(entity).State = EntityState.Modified;
             await dbContext.SaveChangesAsync();
             return entity;

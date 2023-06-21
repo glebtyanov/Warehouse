@@ -1,12 +1,14 @@
 using BLL.DTO.Adding;
 using BLL.DTO.Plain;
 using BLL.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "CEO")]
     public class StatusesController : ControllerBase
     {
         private readonly StatusService statusService;

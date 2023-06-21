@@ -15,7 +15,6 @@ namespace DAL.Configurations
 
             builder.Property(p => p.Description)
                 .HasMaxLength(100);
-
         }
     }
 }

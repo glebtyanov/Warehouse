@@ -1,14 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
 using BLL.DTO.Adding;
-using BLL.Services;
 using BLL.DTO.Plain;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using BLL.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CustomersController : ControllerBase
     {
         private readonly CustomerService customerService;
@@ -19,13 +19,15 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCustomersAsync()
+        [Authorize(Roles = "CEO, Manager")]
+        public async Task<IActionResult> GetAll()
         {
             return Ok(await customerService.GetAllAsync());
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCustomerByIdAsync(int id)
+        [Authorize(Roles = "CEO, Manager")]
+        public async Task<IActionResult> GetById(int id)
         {
             var foundCustomer = await customerService.GetByIdAsync(id);
             if (foundCustomer is null)
@@ -35,13 +37,15 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCustomerAsync(CustomerAddingDTO customerToAdd)
+        [Authorize(Roles = "CEO, Manager")]
+        public async Task<IActionResult> Add(CustomerAddingDTO customerToAdd)
         {
             return Ok(await customerService.AddAsync(customerToAdd));
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateCustomerAsync(CustomerPlainDTO customerToUpdate)
+        [Authorize(Roles = "CEO, Manager")]
+        public async Task<IActionResult> Update(CustomerPlainDTO customerToUpdate)
         {
             var updatedCustomer = await customerService.UpdateAsync(customerToUpdate);
 
@@ -52,7 +56,8 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomerAsync(int id)
+        [Authorize(Roles = "CEO, Manager")]
+        public async Task<IActionResult> Delete(int id)
         {
             var isDeleteSuccessful = await customerService.DeleteAsync(id);
 

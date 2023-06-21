@@ -14,20 +14,16 @@ namespace DAL.Configurations
                 .IsRequired();
 
             builder.HasOne(o => o.Customer)
-                .WithMany(c => c.Orders)
-                .HasForeignKey(o => o.CustomerId);
+                .WithMany(c => c.Orders);
 
             builder.HasOne(o => o.Status)
-                .WithMany(s => s.Orders)
-                .HasForeignKey(o => o.StatusId);
+                .WithMany(s => s.Orders);
 
             builder.HasOne(o => o.Transaction)
-                .WithOne(t => t.Order)
-                .HasForeignKey<Transaction>(t => t.OrderId);
+                .WithOne(t => t.Order);
 
             builder.HasOne(o => o.Worker)
-                .WithMany(w => w.Orders)
-                .HasForeignKey(o => o.WorkerId);
+                .WithMany(w => w.Orders);
 
             builder.HasMany(o => o.Products)
                 .WithMany(p => p.Orders)

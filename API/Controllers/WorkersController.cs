@@ -1,12 +1,14 @@
 using BLL.DTO.Adding;
 using BLL.DTO.Plain;
 using BLL.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class WorkersController : ControllerBase
     {
         private readonly WorkerService workerService;
@@ -17,12 +19,14 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "CEO, Manager")]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await workerService.GetAllAsync());
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetById(int id)
         {
             var worker = await workerService.GetByIdAsync(id);
@@ -32,16 +36,16 @@ namespace API.Controllers
             return Ok(worker);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Add(WorkerAddingDTO workerToAdd)
-        {
-            var addedWorker = await workerService.AddAsync(workerToAdd);
+        //[HttpPost]
+        //public async Task<IActionResult> Add(WorkerAddingDTO workerToAdd)
+        //{
+        //    var addedWorker = await workerService.AddAsync(workerToAdd);
 
-            if (addedWorker is null)
-                return BadRequest("Worker creation failed.");
+        //    if (addedWorker is null)
+        //        return BadRequest("Worker creation failed.");
 
-            return CreatedAtAction(nameof(GetById), new { id = addedWorker.WorkerId }, addedWorker);
-        }
+        //    return CreatedAtAction(nameof(GetById), new { id = addedWorker.WorkerId }, addedWorker);
+        //}
 
         [HttpPut]
         public async Task<IActionResult> Update(WorkerPlainDTO workerToUpdate)

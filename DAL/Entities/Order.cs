@@ -11,7 +11,7 @@
 
         public double ProductAmount { get; set; }
 
-        public int StatusId { get; set; }
+        public int StatusId { get; set; } = 1;
 
         public int WorkerId { get; set; }
 
@@ -25,7 +25,7 @@
         public Worker? Worker { get; set; }
 
         // refered by many
-        public ICollection<Product>? Products { get; set; }
+        public List<Product>? Products { get; set; }
 
     }
 }

@@ -13,10 +13,16 @@ namespace DAL.Repositories
         }
 
         public override async Task<Status?> GetDetailsAsync(int id)
-        {
-            return await ((DbSet<Status>)dbContext.Statuses
+        { 
+            var statuses = dbContext.Statuses
+                .Where(status => status.StatusId == id);
+
+            if (!statuses.Any())
+                return null;
+
+            return await statuses
                 .Include(status => status.Orders)
-                ).FindAsync(id);
+                .FirstAsync();
         }
     }
 }

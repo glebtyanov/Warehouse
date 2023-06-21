@@ -14,8 +14,7 @@ namespace DAL.EntityTypeConfigurations
                 .HasMaxLength(50);
 
             builder.HasMany(s => s.Orders)
-                .WithOne(o => o.Status)
-                .HasForeignKey(o => o.StatusId);
+                .WithOne(o => o.Status);
         }
     }
 }

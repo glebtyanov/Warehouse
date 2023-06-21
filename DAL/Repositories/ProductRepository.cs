@@ -14,9 +14,15 @@ namespace DAL.Repositories
 
         public override async Task<Product?> GetDetailsAsync(int id)
         {
-            return await ((DbSet<Product>)dbContext.Products
+            var products = dbContext.Products
+                .Where(product => product.ProductId == id);
+
+            if (!products.Any())
+                return null;
+
+            return await products
                 .Include(product => product.Orders)
-                ).FindAsync(id);
+                .FirstAsync();
         }
     }
 }

@@ -15,11 +15,17 @@ namespace DAL.Repositories
 
         public override async Task<Worker?> GetDetailsAsync(int id)
         {
-            return await ((DbSet<Worker>)dbContext.Workers
+            var workers = dbContext.Workers
+                .Where(worker => worker.WorkerId == id);
+
+            if (!workers.Any())
+                return null;
+
+            return await workers
                 .Include(worker => worker.Orders)
                 .Include(worker => worker.Position)
                 .Include(worker => worker.Departments)
-                ).FindAsync(id);
+                .FirstAsync();
         }
 
         public async Task<Worker?> FindByEmailAsync(string email)

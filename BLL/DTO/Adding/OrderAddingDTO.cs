@@ -15,5 +15,8 @@ namespace BLL.DTO.Adding
 
         [Required]
         public int WorkerId { get; set; }
+
+        [Required]
+        public int StatusId { get; set; } = 1;
     }
 }

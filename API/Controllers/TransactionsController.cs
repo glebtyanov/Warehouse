@@ -2,11 +2,13 @@ using BLL.DTO.Adding;
 using BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 using BLL.DTO.Plain;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "CEO, Manager")]
     public class TransactionsController : ControllerBase
     {
         private readonly TransactionService transactionService;
