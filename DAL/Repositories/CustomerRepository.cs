@@ -9,7 +9,7 @@ namespace DAL.Repositories
     {
         public CustomerRepository(WarehouseContext dbContext) : base(dbContext)
         {
-                
+
         }
 
         public override async Task<Customer?> GetDetailsAsync(int id)

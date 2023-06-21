@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using BLL.DTO.Plain;
 using DAL.Entities;
 using DAL.UnitsOfWork;
-using BLL.DTO.Plain;
 
 namespace BLL.Services
 {

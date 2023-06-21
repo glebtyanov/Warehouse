@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using BLL.MappingProfiles;
+﻿using BLL.MappingProfiles;
 using BLL.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BLL.Extensions
 {

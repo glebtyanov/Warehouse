@@ -10,6 +10,6 @@
         // refered by one
         public Department? Department { get; set; }
 
-        public Worker? Worker { get; set; } 
+        public Worker? Worker { get; set; }
     }
 }

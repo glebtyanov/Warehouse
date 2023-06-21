@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DAL.Entities;
 using DAL.Interfaces;
 using DAL.Repositories;
 using DAL.UnitsOfWork;
-using DAL.Entities;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DAL.Extensions
 {
@@ -24,19 +24,19 @@ namespace DAL.Extensions
 
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<IBaseRepository<Department>>(provider => provider.GetService<IDepartmentRepository>());
-            
+
             services.AddScoped<IDepartmentWorkerRepository, DepartmentWorkerRepository>();
             services.AddScoped<IBaseRepository<DepartmentWorker>>(provider => provider.GetService<IDepartmentWorkerRepository>());
-            
+
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IBaseRepository<Order>>(provider => provider.GetService<IOrderRepository>());
-            
+
             services.AddScoped<IOrderProductRepository, OrderProductRepository>();
             services.AddScoped<IBaseRepository<OrderProduct>>(provider => provider.GetService<IOrderProductRepository>());
-            
+
             services.AddScoped<IStatusRepository, StatusRepository>();
             services.AddScoped<IBaseRepository<Status>>(provider => provider.GetService<IStatusRepository>());
-            
+
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IBaseRepository<Transaction>>(provider => provider.GetService<ITransactionRepository>());
 

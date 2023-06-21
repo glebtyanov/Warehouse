@@ -1,7 +1,4 @@
-﻿using DAL.Entities;
-using System.ComponentModel.DataAnnotations;
-
-namespace BLL.DTO.Plain
+﻿namespace BLL.DTO.Plain
 {
     public class PositionDetailsDTO
     {
@@ -9,6 +6,6 @@ namespace BLL.DTO.Plain
 
         public string Name { get; set; }
 
-        public List<WorkerPlainDTO> Workers { get; set; } 
+        public List<WorkerPlainDTO> Workers { get; set; }
     }
 }

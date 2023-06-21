@@ -2,6 +2,7 @@
 using BLL.DTO;
 using BLL.DTO.Adding;
 using DAL.Entities;
+using DAL.Enum;
 using DAL.UnitsOfWork;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -41,7 +42,7 @@ namespace BLL.Services
             workerToAdd.PasswordHash = passwordHash;
             workerToAdd.PasswordSalt = passwordSalt;
             // 3 stands for regular in db
-            workerToAdd.PositionId = 3;
+            workerToAdd.PositionId = (int)Enums.Positions.Regular;
             workerToAdd.HireDate = DateTime.Now;
 
             await unitOfWork.WorkerRepository.AddAsync(workerToAdd);
@@ -74,7 +75,7 @@ namespace BLL.Services
             }
 
             CreatePasswordHash(changingPasswordRequest.Password.Trim().ToLower(), out byte[] passwordHash, out byte[] passwordSalt);
-            
+
             if (workerToChangePassword.PasswordHash == passwordHash && workerToChangePassword.PasswordSalt == passwordSalt)
             {
                 return false;

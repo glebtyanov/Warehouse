@@ -3,7 +3,6 @@ using BLL.DTO.Adding;
 using BLL.DTO.Plain;
 using DAL.Entities;
 using DAL.UnitsOfWork;
-using Microsoft.Identity.Client;
 
 namespace BLL.Services
 {

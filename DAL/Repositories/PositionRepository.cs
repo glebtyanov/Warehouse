@@ -14,7 +14,7 @@ namespace DAL.Repositories
         public override async Task<Position?> GetDetailsAsync(int id)
         {
             var positions = dbContext.Positions
-                .Where(position =>  position.PositionId == id);
+                .Where(position => position.PositionId == id);
 
             if (!positions.Any())
                 return null;

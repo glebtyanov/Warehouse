@@ -19,7 +19,7 @@ namespace DAL.Repositories
         public bool Exists(DepartmentWorker departmentWorker)
         {
             return dbContext.DepartmentWorkers
-                .Where(dw => dw.DepartmentId == departmentWorker.DepartmentId 
+                .Where(dw => dw.DepartmentId == departmentWorker.DepartmentId
                 && dw.WorkerId == departmentWorker.WorkerId)
                 .Count() > 0;
         }

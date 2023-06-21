@@ -46,7 +46,7 @@ namespace BLL.Services
         {
             var departmentWorker = mapper.Map<DepartmentWorker>(departmentWorkerAdding);
 
-            if (unitOfWork.DepartmentWorkerRepository.Exists(departmentWorker) 
+            if (unitOfWork.DepartmentWorkerRepository.Exists(departmentWorker)
                 || await unitOfWork.WorkerRepository.GetByIdAsync(departmentWorker.WorkerId) is null
                 || await unitOfWork.DepartmentRepository.GetByIdAsync(departmentWorker.DepartmentId) is null)
             {

@@ -13,7 +13,7 @@ namespace DAL.Repositories
         }
 
         public override async Task<Status?> GetDetailsAsync(int id)
-        { 
+        {
             var statuses = dbContext.Statuses
                 .Where(status => status.StatusId == id);
 

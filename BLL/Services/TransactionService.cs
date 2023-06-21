@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using BLL.DTO.Adding;
-using DAL.UnitsOfWork;
 using BLL.DTO.Plain;
 using DAL.Entities;
+using DAL.Enum;
+using DAL.UnitsOfWork;
 
 namespace BLL.Services
 {
@@ -36,10 +37,18 @@ namespace BLL.Services
 
         public async Task<TransactionPlainDTO?> AddAsync(TransactionAddingDTO transactionToAdd)
         {
-            if (await unitOfWork.OrderRepository.GetByIdAsync(transactionToAdd.OrderId) is null)
+            var transactionOrder = await unitOfWork.OrderRepository.GetByIdAsync(transactionToAdd.OrderId);
+
+            if (transactionOrder is null
+                // Status.Processed means transaction for given order has already been added
+                || transactionOrder.StatusId == (int)Enums.Statuses.Processed)
                 return null;
 
             var addedTransaction = await unitOfWork.TransactionRepository.AddAsync(mapper.Map<Transaction>(transactionToAdd));
+
+            // if transaction is added it means order has been paid so order status should change
+            transactionOrder.StatusId = (int)Enums.Statuses.Processed;
+            await unitOfWork.OrderRepository.UpdateAsync(transactionOrder);
 
             return mapper.Map<TransactionPlainDTO>(addedTransaction);
         }

@@ -7,7 +7,7 @@ namespace DAL.Context
     {
         public WarehouseContext()
         {
-                
+
         }
         public WarehouseContext(DbContextOptions<WarehouseContext> options) : base(options)
         {

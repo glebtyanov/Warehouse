@@ -2,7 +2,6 @@
 using DAL.Entities;
 using DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace DAL.Repositories
 {
@@ -10,7 +9,7 @@ namespace DAL.Repositories
     {
         public WorkerRepository(WarehouseContext dbContext) : base(dbContext)
         {
-                
+
         }
 
         public override async Task<Worker?> GetDetailsAsync(int id)

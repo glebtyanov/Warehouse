@@ -1,12 +1,14 @@
-using Microsoft.EntityFrameworkCore;
+using BLL.Extensions;
 using DAL.Context;
 using DAL.Extensions;
-using BLL.Extensions;
-using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Events;
 using Swashbuckle.AspNetCore.Filters;
+using System.Text;
 
 namespace WarehouseInnowise
 {
@@ -16,10 +18,20 @@ namespace WarehouseInnowise
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Logging.ClearProviders();
+            builder.Logging.SetMinimumLevel(LogLevel.Trace);
+            builder.Logging.AddSerilog(new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger());
+
             // Add services to the container.
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddSwaggerGen(options =>

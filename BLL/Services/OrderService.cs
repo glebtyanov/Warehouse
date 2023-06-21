@@ -2,6 +2,7 @@
 using BLL.DTO.Adding;
 using BLL.DTO.Plain;
 using DAL.Entities;
+using DAL.Enum;
 using DAL.UnitsOfWork;
 
 namespace BLL.Services
@@ -54,6 +55,7 @@ namespace BLL.Services
                 || await unitOfWork.StatusRepository.GetByIdAsync(orderToAdd.StatusId) is null)
                 return null;
 
+            orderToAdd.StatusId = (int)Enums.Statuses.WaitingForPayment;
             var addedOrder = await unitOfWork.OrderRepository.AddAsync(mapper.Map<Order>(orderToAdd));
 
             return mapper.Map<OrderPlainDTO>(addedOrder);
