@@ -1,4 +1,6 @@
-﻿namespace DAL.Entities
+﻿using DAL.Enum;
+
+namespace DAL.Entities
 {
     public class Worker
     {
@@ -14,7 +16,7 @@
 
         public string? Email { get; set; }
 
-        public int PositionId { get; set; }
+        public int PositionId { get; set; } = (int)Enums.Positions.Regular;
 
         public byte[] PasswordHash { get; set; }
 
@@ -26,8 +28,8 @@
         public Position? Position { get; set; }
 
         // refered by many
-        public ICollection<Order>? Orders { get; set; }
+        public List<Order>? Orders { get; set; }
 
-        public ICollection<Department>? Departments { get; set; }
+        public List<Department>? Departments { get; set; }
     }
 }

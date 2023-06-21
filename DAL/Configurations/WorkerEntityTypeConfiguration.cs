@@ -26,9 +26,10 @@ namespace DAL.Configurations
                 .HasMaxLength(50);
 
             builder.HasMany(w => w.Orders)
-                .WithOne(o => o.Worker)
-                .HasForeignKey(o => o.WorkerId);
+                .WithOne(o => o.Worker);
 
+            builder.HasOne(w => w.Position)
+                .WithMany(p => p.Workers);
         }
     }
 }

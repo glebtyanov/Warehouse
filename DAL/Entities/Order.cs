@@ -1,4 +1,6 @@
-﻿namespace DAL.Entities
+﻿using DAL.Enum;
+
+namespace DAL.Entities
 {
     public class Order
     {
@@ -11,7 +13,7 @@
 
         public double ProductAmount { get; set; }
 
-        public int StatusId { get; set; }
+        public int StatusId { get; set; } = (int)Enums.Statuses.WaitingForPayment;
 
         public int WorkerId { get; set; }
 
@@ -25,7 +27,7 @@
         public Worker? Worker { get; set; }
 
         // refered by many
-        public ICollection<Product>? Products { get; set; }
+        public List<Product>? Products { get; set; }
 
     }
 }
