@@ -36,16 +36,15 @@ namespace API.Controllers
             return Ok(worker);
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Add(WorkerAddingDTO workerToAdd)
-        //{
-        //    var addedWorker = await workerService.AddAsync(workerToAdd);
+        [HttpGet("details/{id}")]
+        public async Task<IActionResult> GetDetails(int id)
+        {
+            var foundWorker = await workerService.GetDetailsByIdAsync(id);
+            if (foundWorker is null)
+                return NotFound("Worker not found");
 
-        //    if (addedWorker is null)
-        //        return BadRequest("Worker creation failed.");
-
-        //    return CreatedAtAction(nameof(GetById), new { id = addedWorker.WorkerId }, addedWorker);
-        //}
+            return Ok(foundWorker);
+        }
 
         [HttpPut]
         public async Task<IActionResult> Update(WorkerPlainDTO workerToUpdate)

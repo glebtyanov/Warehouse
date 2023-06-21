@@ -34,6 +34,16 @@ namespace API.Controllers
             return Ok(status);
         }
 
+        [HttpGet("details/{id}")]
+        public async Task<IActionResult> GetDetails(int id)
+        {
+            var foundStatus = await statusService.GetDetailsByIdAsync(id);
+            if (foundStatus is null)
+                return NotFound("Status not found");
+
+            return Ok(foundStatus);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Add(StatusAddingDTO statusToAdd)
         {

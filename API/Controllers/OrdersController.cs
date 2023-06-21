@@ -26,19 +26,6 @@ namespace API.Controllers
             return Ok(await orderService.GetAllAsync());
         }
 
-        [HttpGet("worker/{id}")]
-        [Authorize]
-        public async Task<IActionResult> GetAllOfGivenWorker(int id)
-        {
-            if (HttpContext.User.FindFirstValue(ClaimTypes.Role) != "CEO" ||
-                HttpContext.User.FindFirstValue(ClaimTypes.Role) != "Manager")
-            {
-                if (HttpContext.User.FindFirstValue("id") != id.ToString())
-                    return Forbid();
-            }
-
-            return Ok(await orderService.GetAllOfGivenWorker(id));
-        }
 
         [HttpGet("{id}")]
         [Authorize(Roles = "CEO, Manager")]
@@ -51,6 +38,31 @@ namespace API.Controllers
             return Ok(order);
         }
 
+        [HttpGet("details/{id}")]
+        [Authorize(Roles = "CEO, Manager")]
+        public async Task<IActionResult> GetDetails(int id)
+        {
+            var foundOrder = await orderService.GetDetailsByIdAsync(id);
+            if (foundOrder is null)
+                return NotFound("Order not found");
+
+            return Ok(foundOrder);
+        }
+
+        [HttpGet("worker/{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetAllOfGivenWorker(int id)
+        {
+            if (!HttpContext.User.IsInRole("CEO") &&
+                !HttpContext.User.IsInRole("Manager"))
+            {
+                if (HttpContext.User.FindFirstValue("id") != id.ToString())
+                    return Forbid();
+            }
+
+            return Ok(await orderService.GetAllOfGivenWorker(id));
+        }
+
         [HttpPost]
         public async Task<IActionResult> Add(OrderAddingDTO orderToAdd)
         {
@@ -60,6 +72,18 @@ namespace API.Controllers
                 return BadRequest("Order creation failed.");
 
             return CreatedAtAction(nameof(GetById), new { id = addedOrder.OrderId }, addedOrder);
+        }
+
+        [HttpPost("addWorker")]
+        [Authorize(Roles = "CEO, Manager")]
+        public async Task<IActionResult> AddProductToOrder(OrderProductAddingDTO orderProductToAdd)
+        {
+            var isAdded = await orderService.AddOrderToProductAsync(orderProductToAdd);
+
+            if (!isAdded)
+                return BadRequest("Product is already in the order or orderId or productId is invalid");
+
+            return Ok("Product successfully added to the order");
         }
 
         [HttpPut]
@@ -79,7 +103,7 @@ namespace API.Controllers
             if (!isDeleted)
                 return NotFound();
 
-            return NoContent();
+            return Ok("Order successfuly deleted");
         }
     }
 }

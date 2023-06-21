@@ -29,6 +29,11 @@ namespace BLL.Services
             return mapper.Map<ProductPlainDTO>(await unitOfWork.ProductRepository.GetByIdAsync(id));
         }
 
+        public async Task<ProductDetailsDTO?> GetDetailsByIdAsync(int id)
+        {
+            return mapper.Map<ProductDetailsDTO>(await unitOfWork.ProductRepository.GetDetailsAsync(id));
+        }
+
         public async Task<ProductPlainDTO> AddAsync(ProductAddingDTO productToAdd)
         {
             var addedProduct = await unitOfWork.ProductRepository.AddAsync(mapper.Map<Product>(productToAdd));

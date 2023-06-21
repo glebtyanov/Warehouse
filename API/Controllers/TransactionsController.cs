@@ -34,6 +34,16 @@ namespace API.Controllers
             return Ok(transaction);
         }
 
+        [HttpGet("details/{id}")]
+        public async Task<IActionResult> GetDetails(int id)
+        {
+            var foundTransaction = await transactionService.GetDetailsByIdAsync(id);
+            if (foundTransaction is null)
+                return NotFound("Transaction not found");
+
+            return Ok(foundTransaction);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Add(TransactionAddingDTO transactionToAdd)
         {

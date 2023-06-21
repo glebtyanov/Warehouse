@@ -34,6 +34,16 @@ namespace API.Controllers
             return Ok(position);
         }
 
+        [HttpGet("details/{id}")]
+        public async Task<IActionResult> GetDetails(int id)
+        {
+            var foundPosition = await positionService.GetDetailsByIdAsync(id);
+            if (foundPosition is null)
+                return NotFound("Position not found");
+
+            return Ok(foundPosition);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Add(PositionAddingDTO positionToAdd)
         {

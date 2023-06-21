@@ -24,7 +24,7 @@ namespace API.Controllers
                 return BadRequest("Email is taken");
             }
 
-            return Ok();
+            return Ok("Successfully registered");
         }
 
         [HttpPost("login")]
@@ -33,8 +33,8 @@ namespace API.Controllers
             var loginResponse = await authService.Login(loginRequest);
 
             // i know its terrible 
-            if (loginResponse != "Email or password is incorrect")
-                return BadRequest(loginResponse);
+            if (loginResponse.Length<50)
+                return BadRequest("Email or password is incorrect");
 
             return Ok(loginResponse);
         }

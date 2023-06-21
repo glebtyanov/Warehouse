@@ -36,12 +36,36 @@ namespace API.Controllers
             return Ok(department);
         }
 
+        [HttpGet("details/{id}")]
+        [Authorize(Roles = "CEO, Manager")]
+        public async Task<IActionResult> GetDetails(int id)
+        {
+            var foundDepartment = await departmentService.GetDetailsByIdAsync(id);
+            if (foundDepartment is null)
+                return NotFound("Department not found");
+
+            return Ok(foundDepartment);
+        }
+
         [HttpPost]
         [Authorize(Roles = "CEO")]
         public async Task<IActionResult> Add(DepartmentAddingDTO departmentToAdd)
         {
             var addedDepartment = await departmentService.AddAsync(departmentToAdd);
+
             return CreatedAtAction(nameof(GetById), new { id = addedDepartment.DepartmentId }, addedDepartment);
+        }
+
+        [HttpPost("addWorker")]
+        [Authorize(Roles = "CEO, Manager")]
+        public async Task<IActionResult> AddWorkerToDepartment(DepartmentWorkerAddingDTO departmentWorkerToAdd)
+        {
+            var isAdded = await departmentService.AddWorkerToDepartmentAsync(departmentWorkerToAdd);
+            
+            if (!isAdded)
+                return BadRequest("Worker is already in the department or departmentId or workerId is invalid");
+
+            return Ok("Worker successfully added to the department");
         }
 
         [HttpPut]
@@ -63,7 +87,7 @@ namespace API.Controllers
             if (!isDeleted)
                 return NotFound();
 
-            return NoContent();
+            return Ok("Department successfuly deleted");
         }
     }
 }

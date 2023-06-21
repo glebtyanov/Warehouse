@@ -49,7 +49,7 @@ namespace WarehouseInnowise
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
-                            .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value!)),
+                            .GetBytes(builder.Configuration.GetSection("AppSettings:SecretKey").Value!)),
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };

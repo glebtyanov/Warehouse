@@ -14,6 +14,9 @@ namespace BLL.Extensions
             services.AddScoped<ProductService, ProductService>();
             services.AddScoped<PositionService, PositionService>();
             services.AddScoped<StatusService, StatusService>();
+            services.AddScoped<AuthService, AuthService>();
+            services.AddScoped<TransactionService, TransactionService>();
+            services.AddScoped<WorkerService, WorkerService>();
 
             services.AddAutoMapper(typeof(ModelToDtoProfile));
 

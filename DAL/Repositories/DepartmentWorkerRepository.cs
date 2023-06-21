@@ -10,5 +10,18 @@ namespace DAL.Repositories
         {
 
         }
+
+        public async override Task<DepartmentWorker?> GetByIdAsync(int id)
+        {
+            return null;
+        }
+
+        public bool Exists(DepartmentWorker departmentWorker)
+        {
+            return dbContext.DepartmentWorkers
+                .Where(dw => dw.DepartmentId == departmentWorker.DepartmentId 
+                && dw.WorkerId == departmentWorker.WorkerId)
+                .Count() > 0;
+        }
     }
 }

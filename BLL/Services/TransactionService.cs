@@ -29,6 +29,11 @@ namespace BLL.Services
             return mapper.Map<TransactionPlainDTO>(await unitOfWork.TransactionRepository.GetByIdAsync(id));
         }
 
+        public async Task<TransactionDetailsDTO?> GetDetailsByIdAsync(int id)
+        {
+            return mapper.Map<TransactionDetailsDTO>(await unitOfWork.TransactionRepository.GetDetailsAsync(id));
+        }
+
         public async Task<TransactionPlainDTO?> AddAsync(TransactionAddingDTO transactionToAdd)
         {
             if (await unitOfWork.OrderRepository.GetByIdAsync(transactionToAdd.OrderId) is null)

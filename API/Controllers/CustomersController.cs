@@ -31,7 +31,18 @@ namespace API.Controllers
         {
             var foundCustomer = await customerService.GetByIdAsync(id);
             if (foundCustomer is null)
-                return NotFound();
+                return NotFound("Customer not found");
+
+            return Ok(foundCustomer);
+        }
+
+        [HttpGet("details/{id}")]
+        [Authorize(Roles = "CEO, Manager")]
+        public async Task<IActionResult> GetDetails(int id)
+        {
+            var foundCustomer = await customerService.GetDetailsByIdAsync(id);
+            if (foundCustomer is null)
+                return NotFound("Customer not found");
 
             return Ok(foundCustomer);
         }

@@ -13,6 +13,6 @@
         public double Price { get; set; }
 
         // refered by many
-        public ICollection<Order>? Orders { get; set; }
+        public List<Order>? Orders { get; set; }
     }
 }

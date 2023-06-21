@@ -20,12 +20,6 @@ namespace BLL.DTO.Adding
         public string? Email { get; set; }
 
         [Required]
-        public int PositionId { get; set; }
-
-        [Required]
         public string Password { get; set; }
-
-        [Required]
-        public DateTime HireDate { get; set; }
     }
 }

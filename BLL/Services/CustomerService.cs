@@ -3,6 +3,7 @@ using BLL.DTO.Adding;
 using BLL.DTO.Plain;
 using DAL.Entities;
 using DAL.UnitsOfWork;
+using Microsoft.Identity.Client;
 
 namespace BLL.Services
 {
@@ -28,6 +29,11 @@ namespace BLL.Services
         public async Task<CustomerPlainDTO?> GetByIdAsync(int id)
         {
             return mapper.Map<CustomerPlainDTO>(await unitOfWork.CustomerRepository.GetByIdAsync(id));
+        }
+
+        public async Task<CustomerDetailsDTO?> GetDetailsByIdAsync(int id)
+        {
+            return mapper.Map<CustomerDetailsDTO>(await unitOfWork.CustomerRepository.GetDetailsAsync(id));
         }
 
         public async Task<CustomerPlainDTO> AddAsync(CustomerAddingDTO customerToAdd)

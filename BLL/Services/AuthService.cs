@@ -40,6 +40,9 @@ namespace BLL.Services
             workerToAdd.Email = workerToAdd.Email.Trim().ToLower();
             workerToAdd.PasswordHash = passwordHash;
             workerToAdd.PasswordSalt = passwordSalt;
+            // 3 stands for regular in db
+            workerToAdd.PositionId = 3;
+            workerToAdd.HireDate = DateTime.Now;
 
             await unitOfWork.WorkerRepository.AddAsync(workerToAdd);
 

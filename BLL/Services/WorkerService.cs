@@ -28,6 +28,11 @@ namespace BLL.Services
             return mapper.Map<WorkerPlainDTO>(await unitOfWork.WorkerRepository.GetByIdAsync(id));
         }
 
+        public async Task<WorkerDetailsDTO?> GetDetailsByIdAsync(int id)
+        {
+            return mapper.Map<WorkerDetailsDTO>(await unitOfWork.WorkerRepository.GetDetailsAsync(id));
+        }
+
         public async Task<WorkerPlainDTO?> UpdateAsync(WorkerPlainDTO workerToUpdate)
         {
             if (await unitOfWork.PositionRepository.GetByIdAsync(workerToUpdate.PositionId) is null)

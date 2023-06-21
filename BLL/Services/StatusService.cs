@@ -29,6 +29,11 @@ namespace BLL.Services
             return mapper.Map<StatusPlainDTO>(await unitOfWork.StatusRepository.GetByIdAsync(id));
         }
 
+        public async Task<StatusDetailsDTO?> GetDetailsByIdAsync(int id)
+        {
+            return mapper.Map<StatusDetailsDTO>(await unitOfWork.StatusRepository.GetDetailsAsync(id));
+        }
+
         public async Task<StatusPlainDTO> AddAsync(StatusAddingDTO statusToAdd)
         {
             var addedStatus = await unitOfWork.StatusRepository.AddAsync(mapper.Map<Status>(statusToAdd));

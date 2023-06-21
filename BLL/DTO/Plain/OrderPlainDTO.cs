@@ -15,5 +15,11 @@ namespace BLL.DTO.Plain
 
         [Required]
         public int WorkerId { get; set; }
+
+        [Required]
+        public int StatusId { get; set; }
+
+        [Required]
+        public int CustomerId { get; set; }
     }
 }

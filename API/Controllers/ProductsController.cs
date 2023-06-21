@@ -34,6 +34,16 @@ namespace API.Controllers
             return Ok(product);
         }
 
+        [HttpGet("details/{id}")]
+        public async Task<IActionResult> GetDetails(int id)
+        {
+            var foundProduct = await productService.GetDetailsByIdAsync(id);
+            if (foundProduct is null)
+                return NotFound("Product not found");
+
+            return Ok(foundProduct);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Add(ProductAddingDTO productToAdd)
         {

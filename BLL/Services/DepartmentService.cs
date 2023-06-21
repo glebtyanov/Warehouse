@@ -30,11 +30,32 @@ namespace BLL.Services
             return mapper.Map<DepartmentPlainDTO>(await unitOfWork.DepartmentRepository.GetByIdAsync(id));
         }
 
+        public async Task<DepartmentDetailsDTO?> GetDetailsByIdAsync(int id)
+        {
+            return mapper.Map<DepartmentDetailsDTO>(await unitOfWork.DepartmentRepository.GetDetailsAsync(id));
+        }
+
         public async Task<DepartmentPlainDTO> AddAsync(DepartmentAddingDTO departmentToAdd)
         {
             var addedDepartment = await unitOfWork.DepartmentRepository.AddAsync(mapper.Map<Department>(departmentToAdd));
 
             return mapper.Map<DepartmentPlainDTO>(addedDepartment);
+        }
+
+        public async Task<bool> AddWorkerToDepartmentAsync(DepartmentWorkerAddingDTO departmentWorkerAdding)
+        {
+            var departmentWorker = mapper.Map<DepartmentWorker>(departmentWorkerAdding);
+
+            if (unitOfWork.DepartmentWorkerRepository.Exists(departmentWorker) 
+                || await unitOfWork.WorkerRepository.GetByIdAsync(departmentWorker.WorkerId) is null
+                || await unitOfWork.DepartmentRepository.GetByIdAsync(departmentWorker.DepartmentId) is null)
+            {
+                return false;
+            }
+
+            await unitOfWork.DepartmentWorkerRepository.AddAsync(departmentWorker);
+
+            return true;
         }
 
         public async Task<DepartmentPlainDTO?> UpdateAsync(DepartmentPlainDTO departmentToUpdate)

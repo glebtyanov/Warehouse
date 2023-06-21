@@ -7,7 +7,6 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DTO\Details\" />
     <Folder Include="Interfaces\" />
     <Folder Include="ValidationAttributes\" />
   </ItemGroup>
