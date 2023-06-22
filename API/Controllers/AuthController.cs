@@ -19,14 +19,10 @@ namespace API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(WorkerAddingDTO registerRequest)
+        public IActionResult Register(WorkerAddingDTO registerRequest)
         {
             logger.LogInformation("Registering new worker");
-            if (!await authService.Register(registerRequest))
-            {
-                logger.LogWarning("Email is already taken");
-                return BadRequest("Email is taken");
-            }
+            authService.Register(registerRequest);
 
             logger.LogInformation("Worker registered successfully");
             return Ok("Successfully registered");
@@ -38,27 +34,16 @@ namespace API.Controllers
             logger.LogInformation("Processing login request");
             var loginResponse = await authService.Login(loginRequest);
 
-            if (loginResponse.Length < 50)
-            {
-                logger.LogWarning("Email or password is incorrect");
-                return BadRequest("Email or password is incorrect");
-            }
-
             logger.LogInformation("Login successful");
+
             return Ok(loginResponse);
         }
 
         [HttpPost("changePassword")]
-        public async Task<IActionResult> ChangePassword(WorkerLoginDTO changePasswordRequest)
+        public IActionResult ChangePassword(WorkerLoginDTO changePasswordRequest)
         {
             logger.LogInformation("Processing change password request");
-            var isPasswordChanged = await authService.ChangePassword(changePasswordRequest);
-
-            if (!isPasswordChanged)
-            {
-                logger.LogWarning("Invalid email or new password");
-                return BadRequest("Provide valid email and a new password");
-            }
+            authService.ChangePassword(changePasswordRequest);
 
             logger.LogInformation("Password changed successfully");
             return Ok("Password successfully changed");

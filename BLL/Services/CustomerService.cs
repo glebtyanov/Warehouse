@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.DTO.Adding;
 using BLL.DTO.Plain;
+using BLL.Exceptions;
 using DAL.Entities;
 using DAL.UnitsOfWork;
 
@@ -25,14 +26,24 @@ namespace BLL.Services
             return customersToMap.Select(mapper.Map<CustomerPlainDTO>).ToList();
         }
 
-        public async Task<CustomerPlainDTO?> GetByIdAsync(int id)
+        public async Task<CustomerPlainDTO> GetByIdAsync(int id)
         {
-            return mapper.Map<CustomerPlainDTO>(await unitOfWork.CustomerRepository.GetByIdAsync(id));
+            var foundCustomer = mapper.Map<CustomerPlainDTO>(await unitOfWork.CustomerRepository.GetByIdAsync(id));
+
+            if (foundCustomer is null)
+                throw new NotFoundException("Customer not found");
+
+            return foundCustomer;
         }
 
-        public async Task<CustomerDetailsDTO?> GetDetailsByIdAsync(int id)
+        public async Task<CustomerDetailsDTO> GetDetailsByIdAsync(int id)
         {
-            return mapper.Map<CustomerDetailsDTO>(await unitOfWork.CustomerRepository.GetDetailsAsync(id));
+            var foundCustomer = mapper.Map<CustomerDetailsDTO>(await unitOfWork.CustomerRepository.GetDetailsAsync(id));
+        
+            if (foundCustomer is null)
+                throw new NotFoundException("Customer not found");
+
+            return foundCustomer;
         }
 
         public async Task<CustomerPlainDTO> AddAsync(CustomerAddingDTO customerToAdd)
@@ -42,16 +53,24 @@ namespace BLL.Services
             return mapper.Map<CustomerPlainDTO>(addedCustomer);
         }
 
-        public async Task<CustomerPlainDTO?> UpdateAsync(CustomerPlainDTO customerToUpdate)
+        public async Task<CustomerPlainDTO> UpdateAsync(CustomerPlainDTO customerToUpdate)
         {
             var updatedCustomer = await unitOfWork.CustomerRepository.UpdateAsync(mapper.Map<Customer>(customerToUpdate));
 
-            return mapper.Map<CustomerPlainDTO?>(updatedCustomer);
+            if (updatedCustomer is null)
+                throw new NotFoundException("Customer not found");
+
+            return mapper.Map<CustomerPlainDTO>(updatedCustomer);
         }
 
-        public async Task<bool> DeleteAsync(int customerId)
+        public async void DeleteAsync(int customerId)
         {
-            return await unitOfWork.CustomerRepository.DeleteAsync(customerId);
+            var isDeleted = await unitOfWork.CustomerRepository.DeleteAsync(customerId);
+
+            if(!isDeleted)
+                throw new NotFoundException("Customer not found");
+
+            return;
         }
     }
 }

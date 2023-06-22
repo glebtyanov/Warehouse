@@ -26,6 +26,7 @@ namespace API.Controllers
             logger.LogInformation("Retrieving all customers");
 
             var workers = await workerService.GetAllAsync();
+
             return Ok(workers);
         }
 
@@ -36,11 +37,6 @@ namespace API.Controllers
             logger.LogInformation("Retrieving worker details for ID {Id}", id);
 
             var worker = await workerService.GetByIdAsync(id);
-            if (worker == null)
-            {
-                logger.LogWarning("Worker with Id {Id} not found.", id);
-                return NotFound();
-            }
 
             return Ok(worker);
         }
@@ -51,11 +47,6 @@ namespace API.Controllers
             logger.LogInformation("Retrieving worker details for ID {Id}", id);
 
             var foundWorker = await workerService.GetDetailsByIdAsync(id);
-            if (foundWorker is null)
-            {
-                logger.LogWarning("Worker with Id {Id} not found.", id);
-                return NotFound("Worker not found");
-            }
 
             return Ok(foundWorker);
         }
@@ -66,29 +57,19 @@ namespace API.Controllers
             logger.LogInformation("Updating customer with ID {Id}", workerToUpdate.WorkerId);
 
             var updatedWorker = await workerService.UpdateAsync(workerToUpdate);
-            if (updatedWorker == null)
-            {
-                logger.LogWarning("Worker with Id {WorkerId} not found.", workerToUpdate.WorkerId);
-                return NotFound("Worker not found");
-            }
 
             return Ok(updatedWorker);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
             logger.LogInformation("Deleting worker with ID {Id}", id);
 
-            var isDeleted = await workerService.DeleteAsync(id);
-            if (!isDeleted)
-            {
-                logger.LogWarning("Worker with Id {WorkerId} not found.", id);
-                return NotFound();
-            }
+            workerService.DeleteAsync(id);
 
             logger.LogInformation("Worker with Id {WorkerId} deleted successfully.", id);
-            return NoContent();
+            return Ok("Worker successfully deleted");
         }
     }
 }

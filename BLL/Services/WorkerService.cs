@@ -2,6 +2,7 @@
 using BLL.DTO.Plain;
 using DAL.Entities;
 using DAL.UnitsOfWork;
+using BLL.Exceptions;
 
 namespace BLL.Services
 {
@@ -23,29 +24,47 @@ namespace BLL.Services
             return workersToMap.Select(mapper.Map<WorkerPlainDTO>).ToList();
         }
 
-        public async Task<WorkerPlainDTO?> GetByIdAsync(int id)
+        public async Task<WorkerPlainDTO> GetByIdAsync(int id)
         {
-            return mapper.Map<WorkerPlainDTO>(await unitOfWork.WorkerRepository.GetByIdAsync(id));
+            var foundWorker = mapper.Map<WorkerPlainDTO>(await unitOfWork.WorkerRepository.GetByIdAsync(id));
+
+            if (foundWorker is null)
+                throw new NotFoundException("Worker not found");
+
+            return foundWorker;
         }
 
-        public async Task<WorkerDetailsDTO?> GetDetailsByIdAsync(int id)
+        public async Task<WorkerDetailsDTO> GetDetailsByIdAsync(int id)
         {
-            return mapper.Map<WorkerDetailsDTO>(await unitOfWork.WorkerRepository.GetDetailsAsync(id));
+            var foundWorker = mapper.Map<WorkerDetailsDTO>(await unitOfWork.WorkerRepository.GetDetailsAsync(id));
+
+            if (foundWorker is null)
+                throw new NotFoundException("Worker not found");
+
+            return foundWorker;
         }
 
-        public async Task<WorkerPlainDTO?> UpdateAsync(WorkerPlainDTO workerToUpdate)
+        public async Task<WorkerPlainDTO> UpdateAsync(WorkerPlainDTO workerToUpdate)
         {
             if (await unitOfWork.PositionRepository.GetByIdAsync(workerToUpdate.PositionId) is null)
-                return null;
+                throw new NotValidException("Invalid position");
 
             var updatedWorker = await unitOfWork.WorkerRepository.UpdateAsync(mapper.Map<Worker>(workerToUpdate));
 
-            return mapper.Map<WorkerPlainDTO?>(updatedWorker);
+            if (updatedWorker is null)
+                throw new NotFoundException("Worker not found");
+
+            return mapper.Map<WorkerPlainDTO>(updatedWorker);
         }
 
-        public async Task<bool> DeleteAsync(int workerId)
+        public async void DeleteAsync(int workerId)
         {
-            return await unitOfWork.WorkerRepository.DeleteAsync(workerId);
+            var isDeleted = await unitOfWork.WorkerRepository.DeleteAsync(workerId);
+
+            if (!isDeleted)
+                throw new NotValidException("Worker not found");
+
+            return;
         }
 
     }

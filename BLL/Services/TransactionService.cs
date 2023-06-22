@@ -4,6 +4,7 @@ using BLL.DTO.Plain;
 using DAL.Entities;
 using DAL.Enum;
 using DAL.UnitsOfWork;
+using BLL.Exceptions;
 
 namespace BLL.Services
 {
@@ -25,24 +26,35 @@ namespace BLL.Services
             return transactionsToMap.Select(mapper.Map<TransactionPlainDTO>).ToList();
         }
 
-        public async Task<TransactionPlainDTO?> GetByIdAsync(int id)
+        public async Task<TransactionPlainDTO> GetByIdAsync(int id)
         {
-            return mapper.Map<TransactionPlainDTO>(await unitOfWork.TransactionRepository.GetByIdAsync(id));
+            var foundTransaction = mapper.Map<TransactionPlainDTO>(await unitOfWork.TransactionRepository.GetByIdAsync(id));
+
+            if (foundTransaction is null)
+                throw new NotFoundException("Transaction not found");
+
+            return foundTransaction;
         }
 
-        public async Task<TransactionDetailsDTO?> GetDetailsByIdAsync(int id)
+        public async Task<TransactionDetailsDTO> GetDetailsByIdAsync(int id)
         {
-            return mapper.Map<TransactionDetailsDTO>(await unitOfWork.TransactionRepository.GetDetailsAsync(id));
+            var foundTransaction = mapper.Map<TransactionDetailsDTO>(await unitOfWork.TransactionRepository.GetDetailsAsync(id));
+
+            if (foundTransaction is null)
+                throw new NotFoundException("Transaction not found");
+
+            return foundTransaction;
         }
 
-        public async Task<TransactionPlainDTO?> AddAsync(TransactionAddingDTO transactionToAdd)
+        public async Task<TransactionPlainDTO> AddAsync(TransactionAddingDTO transactionToAdd)
         {
             var transactionOrder = await unitOfWork.OrderRepository.GetByIdAsync(transactionToAdd.OrderId);
 
-            if (transactionOrder is null
-                // Status.Processed means transaction for given order has already been added
-                || transactionOrder.StatusId == (int)Enums.Statuses.Processed)
-                return null;
+            if (transactionOrder is null)
+                throw new NotValidException("Invalid order");
+
+            if (transactionOrder.StatusId == (int)Enums.Statuses.Processed)
+                throw new NotValidException("Order is already processed");
 
             var addedTransaction = await unitOfWork.TransactionRepository.AddAsync(mapper.Map<Transaction>(transactionToAdd));
 
@@ -53,19 +65,27 @@ namespace BLL.Services
             return mapper.Map<TransactionPlainDTO>(addedTransaction);
         }
 
-        public async Task<TransactionPlainDTO?> UpdateAsync(TransactionPlainDTO transactionToUpdate)
+        public async Task<TransactionPlainDTO> UpdateAsync(TransactionPlainDTO transactionToUpdate)
         {
             if (await unitOfWork.OrderRepository.GetByIdAsync(transactionToUpdate.OrderId) is null)
-                return null;
+                throw new NotValidException("Invalid order");
 
             var updatedTransaction = await unitOfWork.TransactionRepository.UpdateAsync(mapper.Map<Transaction>(transactionToUpdate));
 
-            return mapper.Map<TransactionPlainDTO?>(updatedTransaction);
+            if (updatedTransaction is null)
+                throw new NotFoundException("Transaction not found");
+
+            return mapper.Map<TransactionPlainDTO>(updatedTransaction);
         }
 
-        public async Task<bool> DeleteAsync(int transactionId)
+        public async void DeleteAsync(int transactionId)
         {
-            return await unitOfWork.TransactionRepository.DeleteAsync(transactionId);
+            var isDeleted = await unitOfWork.TransactionRepository.DeleteAsync(transactionId);
+
+            if(!isDeleted)
+                throw new NotFoundException("Transaction not found");
+
+            return;
         }
     }
 }

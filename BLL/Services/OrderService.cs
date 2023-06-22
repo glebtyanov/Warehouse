@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.DTO.Adding;
 using BLL.DTO.Plain;
+using BLL.Exceptions;
 using DAL.Entities;
 using DAL.Enum;
 using DAL.UnitsOfWork;
@@ -28,18 +29,30 @@ namespace BLL.Services
 
         public async Task<OrderPlainDTO?> GetByIdAsync(int id)
         {
-            return mapper.Map<OrderPlainDTO>(await unitOfWork.OrderRepository.GetByIdAsync(id));
+            var foundOrder = mapper.Map<OrderPlainDTO>(await unitOfWork.OrderRepository.GetByIdAsync(id));
+
+            if (foundOrder is null)
+                throw new NotFoundException("Order not found");
+
+            return foundOrder;
         }
 
         public async Task<OrderDetailsDTO?> GetDetailsByIdAsync(int id)
         {
-            return mapper.Map<OrderDetailsDTO>(await unitOfWork.OrderRepository.GetDetailsAsync(id));
+            var foundOrder = mapper.Map<OrderDetailsDTO>(await unitOfWork.OrderRepository.GetDetailsAsync(id));
+
+            if (foundOrder is null)
+                throw new NotFoundException("Order not found");
+
+            return foundOrder;
         }
 
         public async Task<List<OrderPlainDTO>> GetAllOfGivenWorker(int workerId)
         {
-            // no need to check worker to not be null since invalid id will be forbidden at controller 
             var worker = await unitOfWork.WorkerRepository.GetByIdAsync(workerId);
+
+            if (worker is null)
+                throw new NotFoundException("Worker not found");
 
             var allOrders = await unitOfWork.OrderRepository.GetAllAsync();
 
@@ -53,28 +66,31 @@ namespace BLL.Services
             if (await unitOfWork.WorkerRepository.GetByIdAsync(orderToAdd.WorkerId) is null
                 || await unitOfWork.CustomerRepository.GetByIdAsync(orderToAdd.CustomerId) is null
                 || await unitOfWork.StatusRepository.GetByIdAsync(orderToAdd.StatusId) is null)
-                return null;
+                throw new NotValidException("Order is not valid. Check workerId, customerId, statusId");
 
             orderToAdd.StatusId = (int)Enums.Statuses.WaitingForPayment;
+
             var addedOrder = await unitOfWork.OrderRepository.AddAsync(mapper.Map<Order>(orderToAdd));
 
             return mapper.Map<OrderPlainDTO>(addedOrder);
         }
 
-        public async Task<bool> AddOrderToProductAsync(OrderProductAddingDTO orderProductToAdd)
+        public async void AddProductToOrderAsync(OrderProductAddingDTO orderProductToAdd)
         {
             var orderProduct = mapper.Map<OrderProduct>(orderProductToAdd);
 
-            if (unitOfWork.OrderProductRepository.Exists(orderProduct)
-                || await unitOfWork.ProductRepository.GetByIdAsync(orderProduct.ProductId) is null
-                || await unitOfWork.OrderRepository.GetByIdAsync(orderProduct.OrderId) is null)
-            {
-                return false;
-            }
+            if (unitOfWork.OrderProductRepository.Exists(orderProduct))
+                throw new AlreadyExistsException("Product is already in the order");
+
+            if (await unitOfWork.ProductRepository.GetByIdAsync(orderProduct.ProductId) is null)
+                throw new NotFoundException("Order not found");
+
+            if (await unitOfWork.OrderRepository.GetByIdAsync(orderProduct.OrderId) is null)
+                throw new NotFoundException("Order not found");
 
             await unitOfWork.OrderProductRepository.AddAsync(orderProduct);
 
-            return true;
+            return;
         }
 
         public async Task<OrderPlainDTO?> UpdateAsync(OrderPlainDTO orderToUpdate)
@@ -82,16 +98,24 @@ namespace BLL.Services
             if (await unitOfWork.WorkerRepository.GetByIdAsync(orderToUpdate.WorkerId) is null
                 || await unitOfWork.CustomerRepository.GetByIdAsync(orderToUpdate.CustomerId) is null
                 || await unitOfWork.StatusRepository.GetByIdAsync(orderToUpdate.StatusId) is null)
-                return null;
+                throw new NotValidException("Order is not valid. Check workerId, customerId, statusId");
 
             var updatedOrder = await unitOfWork.OrderRepository.UpdateAsync(mapper.Map<Order>(orderToUpdate));
+
+            if (updatedOrder is null)
+                throw new NotFoundException("Order not found");
 
             return mapper.Map<OrderPlainDTO?>(updatedOrder);
         }
 
-        public async Task<bool> DeleteAsync(int orderId)
+        public async void DeleteAsync(int orderId)
         {
-            return await unitOfWork.OrderRepository.DeleteAsync(orderId);
+            var isDeleted = await unitOfWork.OrderRepository.DeleteAsync(orderId);
+
+            if (!isDeleted)
+                throw new NotFoundException("Order not found");
+
+            return;
         }
     }
 }

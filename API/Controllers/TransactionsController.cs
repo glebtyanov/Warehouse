@@ -24,6 +24,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetAll()
         {
             logger.LogInformation("Fetching all transactions");
+
             return Ok(await transactionService.GetAllAsync());
         }
 
@@ -32,11 +33,6 @@ namespace API.Controllers
         {
             logger.LogInformation("Fetching transaction by ID: {Id}", id);
             var transaction = await transactionService.GetByIdAsync(id);
-            if (transaction == null)
-            {
-                logger.LogWarning("Transaction not found with ID: {Id}", id);
-                return NotFound();
-            }
 
             return Ok(transaction);
         }
@@ -46,11 +42,6 @@ namespace API.Controllers
         {
             logger.LogInformation("Fetching transaction details by ID: {Id}", id);
             var foundTransaction = await transactionService.GetDetailsByIdAsync(id);
-            if (foundTransaction is null)
-            {
-                logger.LogWarning("Transaction not found with ID: {Id}", id);
-                return NotFound("Transaction not found");
-            }
 
             return Ok(foundTransaction);
         }
@@ -61,13 +52,8 @@ namespace API.Controllers
             logger.LogInformation("Adding a new transaction");
             var addedTransaction = await transactionService.AddAsync(transactionToAdd);
 
-            if (addedTransaction is null)
-            {
-                logger.LogError("Failed to create transaction");
-                return BadRequest("Transaction creation failed.");
-            }
-
             logger.LogInformation("Transaction created successfully");
+
             return CreatedAtAction(nameof(GetById), new { id = addedTransaction.TransactionId }, addedTransaction);
         }
 
@@ -76,29 +62,21 @@ namespace API.Controllers
         {
             logger.LogInformation("Updating transaction with ID: {Id}", transactionToUpdate.TransactionId);
             var updatedTransaction = await transactionService.UpdateAsync(transactionToUpdate);
-            if (updatedTransaction == null)
-            {
-                logger.LogWarning("Transaction not found with ID: {Id}", transactionToUpdate.TransactionId);
-                return NotFound();
-            }
 
             logger.LogInformation("Transaction updated successfully");
+
             return Ok(updatedTransaction);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
             logger.LogInformation("Deleting transaction with ID: {Id}", id);
-            var isDeleted = await transactionService.DeleteAsync(id);
-            if (!isDeleted)
-            {
-                logger.LogWarning("Transaction not found with ID: {Id}", id);
-                return NotFound();
-            }
+            transactionService.DeleteAsync(id);
 
-            logger.LogInformation("Transaction deleted successfully");
-            return NoContent();
+            logger.LogInformation("Transaction with ID {Id} deleted", id);
+
+            return Ok("Transaction successfully deleted");
         }
     }
 }

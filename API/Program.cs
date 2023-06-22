@@ -1,3 +1,4 @@
+using API.Middleware;
 using BLL.Extensions;
 using DAL.Context;
 using DAL.Extensions;
@@ -76,6 +77,8 @@ namespace WarehouseInnowise
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseHttpsRedirection();
 
