@@ -8,7 +8,7 @@
             WaitingForPayment = 2,
             Canceled = 3,
             OnTheWay = 4,
-            Processed = 6,
+            Processed = 5,
         }
 
         public enum Positions
