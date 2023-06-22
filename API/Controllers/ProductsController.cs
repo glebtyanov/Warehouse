@@ -24,6 +24,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetAll()
         {
             logger.LogInformation("Fetching all products");
+
             return Ok(await productService.GetAllAsync());
         }
 
@@ -32,11 +33,6 @@ namespace API.Controllers
         {
             logger.LogInformation("Fetching product by ID: {Id}", id);
             var product = await productService.GetByIdAsync(id);
-            if (product == null)
-            {
-                logger.LogWarning("Product not found with ID: {Id}", id);
-                return NotFound();
-            }
 
             return Ok(product);
         }
@@ -46,11 +42,6 @@ namespace API.Controllers
         {
             logger.LogInformation("Fetching product details by ID: {Id}", id);
             var foundProduct = await productService.GetDetailsByIdAsync(id);
-            if (foundProduct is null)
-            {
-                logger.LogWarning("Product not found with ID: {Id}", id);
-                return NotFound("Product not found");
-            }
 
             return Ok(foundProduct);
         }
@@ -62,6 +53,7 @@ namespace API.Controllers
             var addedProduct = await productService.AddAsync(productToAdd);
 
             logger.LogInformation("Product created successfully");
+
             return CreatedAtAction(nameof(GetById), new { id = addedProduct.ProductId }, addedProduct);
         }
 
@@ -70,29 +62,21 @@ namespace API.Controllers
         {
             logger.LogInformation("Updating product with ID: {Id}", productToUpdate.ProductId);
             var updatedProduct = await productService.UpdateAsync(productToUpdate);
-            if (updatedProduct == null)
-            {
-                logger.LogWarning("Product not found with ID: {Id}", productToUpdate.ProductId);
-                return NotFound();
-            }
 
             logger.LogInformation("Product updated successfully");
+
             return Ok(updatedProduct);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
             logger.LogInformation("Deleting product with ID: {Id}", id);
-            var isDeleted = await productService.DeleteAsync(id);
-            if (!isDeleted)
-            {
-                logger.LogWarning("Product not found with ID: {Id}", id);
-                return NotFound();
-            }
+            productService.DeleteAsync(id);
 
-            logger.LogInformation("Product deleted successfully");
-            return NoContent();
+            logger.LogInformation("Product with ID {Id} deleted", id);
+
+            return Ok("Product successfully deleted");
         }
     }
 }

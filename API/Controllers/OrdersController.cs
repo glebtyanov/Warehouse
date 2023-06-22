@@ -27,6 +27,7 @@ namespace API.Controllers
         {
             logger.LogInformation("Retrieving all orders");
             var orders = await orderService.GetAllAsync();
+
             return Ok(orders);
         }
 
@@ -37,11 +38,6 @@ namespace API.Controllers
         {
             logger.LogInformation("Retrieving order with ID {Id}", id);
             var order = await orderService.GetByIdAsync(id);
-            if (order == null)
-            {
-                logger.LogWarning("Order with ID {Id} not found", id);
-                return NotFound();
-            }
 
             return Ok(order);
         }
@@ -52,11 +48,6 @@ namespace API.Controllers
         {
             logger.LogInformation("Retrieving order details for ID {Id}", id);
             var foundOrder = await orderService.GetDetailsByIdAsync(id);
-            if (foundOrder is null)
-            {
-                logger.LogWarning("Order with ID {Id} not found", id);
-                return NotFound("Order not found");
-            }
 
             return Ok(foundOrder);
         }
@@ -74,6 +65,7 @@ namespace API.Controllers
 
             logger.LogInformation("Retrieving all orders for worker with ID {Id}", id);
             var orders = await orderService.GetAllOfGivenWorker(id);
+
             return Ok(orders);
         }
 
@@ -83,30 +75,20 @@ namespace API.Controllers
             logger.LogInformation("Adding new order");
             var addedOrder = await orderService.AddAsync(orderToAdd);
 
-            if (addedOrder is null)
-            {
-                logger.LogWarning("Order creation failed");
-                return BadRequest("Order creation failed.");
-            }
-
             logger.LogInformation("Order with ID {Id} added", addedOrder.OrderId);
+
             return CreatedAtAction(nameof(GetById), new { id = addedOrder.OrderId }, addedOrder);
         }
 
         [HttpPost("addWorker")]
         [Authorize(Roles = "CEO, Manager")]
-        public async Task<IActionResult> AddProductToOrder(OrderProductAddingDTO orderProductToAdd)
+        public IActionResult AddProductToOrder(OrderProductAddingDTO orderProductToAdd)
         {
             logger.LogInformation("Adding product to order");
-            var isAdded = await orderService.AddOrderToProductAsync(orderProductToAdd);
-
-            if (!isAdded)
-            {
-                logger.LogWarning("Failed to add product to order. Product is already in the order or orderId or productId is invalid");
-                return BadRequest("Product is already in the order or orderId or productId is invalid");
-            }
+            orderService.AddProductToOrderAsync(orderProductToAdd);
 
             logger.LogInformation("Product successfully added to the order");
+
             return Ok("Product successfully added to the order");
         }
 
@@ -115,27 +97,18 @@ namespace API.Controllers
         {
             logger.LogInformation("Updating order with ID {Id}", orderToUpdate.OrderId);
             var updatedOrder = await orderService.UpdateAsync(orderToUpdate);
-            if (updatedOrder == null)
-            {
-                logger.LogWarning("Order with ID {Id} not found", orderToUpdate.OrderId);
-                return NotFound();
-            }
 
             return Ok(updatedOrder);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
             logger.LogInformation("Deleting order with ID {Id}", id);
-            var isDeleted = await orderService.DeleteAsync(id);
-            if (!isDeleted)
-            {
-                logger.LogWarning("Order with ID {Id} not found", id);
-                return NotFound();
-            }
+            orderService.DeleteAsync(id);
 
             logger.LogInformation("Order with ID {Id} deleted", id);
+
             return Ok("Order successfully deleted");
         }
     }

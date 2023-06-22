@@ -26,6 +26,7 @@ namespace API.Controllers
         {
             logger.LogInformation("Retrieving all departments");
             var departments = await departmentService.GetAllAsync();
+
             return Ok(departments);
         }
 
@@ -35,11 +36,6 @@ namespace API.Controllers
         {
             logger.LogInformation("Retrieving department with ID {Id}", id);
             var department = await departmentService.GetByIdAsync(id);
-            if (department == null)
-            {
-                logger.LogWarning("Department with ID {Id} not found", id);
-                return NotFound();
-            }
 
             return Ok(department);
         }
@@ -50,11 +46,6 @@ namespace API.Controllers
         {
             logger.LogInformation("Retrieving department details for ID {Id}", id);
             var foundDepartment = await departmentService.GetDetailsByIdAsync(id);
-            if (foundDepartment is null)
-            {
-                logger.LogWarning("Department with ID {Id} not found", id);
-                return NotFound("Department not found");
-            }
 
             return Ok(foundDepartment);
         }
@@ -67,23 +58,19 @@ namespace API.Controllers
             var addedDepartment = await departmentService.AddAsync(departmentToAdd);
 
             logger.LogInformation("Department with ID {Id} added", addedDepartment.DepartmentId);
+
             return CreatedAtAction(nameof(GetById), new { id = addedDepartment.DepartmentId }, addedDepartment);
         }
 
         [HttpPost("addWorker")]
         [Authorize(Roles = "CEO, Manager")]
-        public async Task<IActionResult> AddWorkerToDepartment(DepartmentWorkerAddingDTO departmentWorkerToAdd)
+        public IActionResult AddWorkerToDepartment(DepartmentWorkerAddingDTO departmentWorkerToAdd)
         {
             logger.LogInformation("Adding worker to department");
-            var isAdded = await departmentService.AddWorkerToDepartmentAsync(departmentWorkerToAdd);
-
-            if (!isAdded)
-            {
-                logger.LogWarning("Failed to add worker to department. Worker is already in the department or departmentId or workerId is invalid");
-                return BadRequest("Worker is already in the department or departmentId or workerId is invalid");
-            }
+            departmentService.AddWorkerToDepartmentAsync(departmentWorkerToAdd);
 
             logger.LogInformation("Worker successfully added to the department");
+
             return Ok("Worker successfully added to the department");
         }
 
@@ -93,29 +80,20 @@ namespace API.Controllers
         {
             logger.LogInformation("Updating department with ID {Id}", departmentToUpdate.DepartmentId);
             var updatedDepartment = await departmentService.UpdateAsync(departmentToUpdate);
-            if (updatedDepartment == null)
-            {
-                logger.LogWarning("Department with ID {Id} not found", departmentToUpdate.DepartmentId);
-                return NotFound();
-            }
 
             return Ok(updatedDepartment);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "CEO")]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
             logger.LogInformation("Deleting department with ID {Id}", id);
-            var isDeleted = await departmentService.DeleteAsync(id);
-            if (!isDeleted)
-            {
-                logger.LogWarning("Department with ID {Id} not found", id);
-                return NotFound();
-            }
+            departmentService.DeleteAsync(id);
 
             logger.LogInformation("Department with ID {Id} deleted", id);
-            return NoContent();
+
+            return Ok("Department successfully deleted");
         }
     }
 }

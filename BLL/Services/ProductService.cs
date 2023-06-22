@@ -3,6 +3,7 @@ using BLL.DTO.Adding;
 using BLL.DTO.Plain;
 using DAL.Entities;
 using DAL.UnitsOfWork;
+using BLL.Exceptions;
 
 namespace BLL.Services
 {
@@ -24,14 +25,24 @@ namespace BLL.Services
             return productsToMap.Select(mapper.Map<ProductPlainDTO>).ToList();
         }
 
-        public async Task<ProductPlainDTO?> GetByIdAsync(int id)
+        public async Task<ProductPlainDTO> GetByIdAsync(int id)
         {
-            return mapper.Map<ProductPlainDTO>(await unitOfWork.ProductRepository.GetByIdAsync(id));
+            var foundProduct = mapper.Map<ProductPlainDTO>(await unitOfWork.ProductRepository.GetByIdAsync(id));
+
+            if (foundProduct is null)
+                throw new NotFoundException("Product not found");
+
+            return foundProduct;
         }
 
-        public async Task<ProductDetailsDTO?> GetDetailsByIdAsync(int id)
+        public async Task<ProductDetailsDTO> GetDetailsByIdAsync(int id)
         {
-            return mapper.Map<ProductDetailsDTO>(await unitOfWork.ProductRepository.GetDetailsAsync(id));
+            var foundProduct = mapper.Map<ProductDetailsDTO>(await unitOfWork.ProductRepository.GetDetailsAsync(id));
+
+            if (foundProduct is null)
+                throw new NotFoundException("Product not found");
+
+            return foundProduct;
         }
 
         public async Task<ProductPlainDTO> AddAsync(ProductAddingDTO productToAdd)
@@ -41,16 +52,24 @@ namespace BLL.Services
             return mapper.Map<ProductPlainDTO>(addedProduct);
         }
 
-        public async Task<ProductPlainDTO?> UpdateAsync(ProductPlainDTO productToUpdate)
+        public async Task<ProductPlainDTO> UpdateAsync(ProductPlainDTO productToUpdate)
         {
             var updatedProduct = await unitOfWork.ProductRepository.UpdateAsync(mapper.Map<Product>(productToUpdate));
 
-            return mapper.Map<ProductPlainDTO?>(updatedProduct);
+            if (updatedProduct is null)
+                throw new NotFoundException("Product not found");
+
+            return mapper.Map<ProductPlainDTO>(updatedProduct);
         }
 
-        public async Task<bool> DeleteAsync(int productId)
+        public async void DeleteAsync(int productId)
         {
-            return await unitOfWork.ProductRepository.DeleteAsync(productId);
+            var isDeleted = await unitOfWork.ProductRepository.DeleteAsync(productId);
+
+            if(!isDeleted)
+                throw new NotFoundException("Product not found");
+
+            return;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BLL.DTO;
 using BLL.DTO.Adding;
+using BLL.Exceptions;
 using DAL.Entities;
 using DAL.Enum;
 using DAL.UnitsOfWork;
@@ -26,28 +27,28 @@ namespace BLL.Services
         }
 
 
-        public async Task<bool> Register(WorkerAddingDTO workerRegistrationRequest)
+        public async void Register(WorkerAddingDTO workerRegistrationRequest)
         {
             var workers = await unitOfWork.WorkerRepository.GetAllAsync();
 
             if (workers.Any(u => u.Email.ToLower() == workerRegistrationRequest.Email.Trim().ToLower()))
             {
-                return false;
+                throw new AlreadyExistsException("Email is taken");
             }
 
             CreatePasswordHash(workerRegistrationRequest.Password.Trim().ToLower(), out byte[] passwordHash, out byte[] passwordSalt);
 
             var workerToAdd = mapper.Map<Worker>(workerRegistrationRequest);
+
             workerToAdd.Email = workerToAdd.Email.Trim().ToLower();
             workerToAdd.PasswordHash = passwordHash;
             workerToAdd.PasswordSalt = passwordSalt;
-            // 3 stands for regular in db
             workerToAdd.PositionId = (int)Enums.Positions.Regular;
             workerToAdd.HireDate = DateTime.Now;
 
             await unitOfWork.WorkerRepository.AddAsync(workerToAdd);
 
-            return true;
+            return;
         }
 
         public async Task<string> Login(WorkerLoginDTO loginRequest)
@@ -57,7 +58,7 @@ namespace BLL.Services
             if (loggingWorker is null || !VerifyPasswordHash(
                 loginRequest.Password, loggingWorker.PasswordHash, loggingWorker.PasswordSalt))
             {
-                return "Email or password is incorrect";
+                throw new NotFoundException("User with given email and password not found");
             }
 
             var workerToGiveTokenTo = await unitOfWork.WorkerRepository.GetDetailsAsync(loggingWorker.WorkerId);
@@ -65,20 +66,20 @@ namespace BLL.Services
             return CreateToken(workerToGiveTokenTo);
         }
 
-        public async Task<bool> ChangePassword(WorkerLoginDTO changingPasswordRequest)
+        public async void ChangePassword(WorkerLoginDTO changingPasswordRequest)
         {
             var workerToChangePassword = await unitOfWork.WorkerRepository.FindByEmailAsync(changingPasswordRequest.Email.Trim());
 
             if (workerToChangePassword is null)
             {
-                return false;
+                throw new NotFoundException("Worker with given email not found");
             }
 
             CreatePasswordHash(changingPasswordRequest.Password.Trim().ToLower(), out byte[] passwordHash, out byte[] passwordSalt);
 
             if (workerToChangePassword.PasswordHash == passwordHash && workerToChangePassword.PasswordSalt == passwordSalt)
             {
-                return false;
+                throw new Exception();
             }
 
             workerToChangePassword.PasswordHash = passwordHash;
@@ -86,7 +87,7 @@ namespace BLL.Services
 
             await unitOfWork.WorkerRepository.UpdateAsync(workerToChangePassword);
 
-            return true;
+            return;
         }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)

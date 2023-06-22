@@ -24,6 +24,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetAll()
         {
             logger.LogInformation("Fetching all statuses");
+
             return Ok(await statusService.GetAllAsync());
         }
 
@@ -32,11 +33,6 @@ namespace API.Controllers
         {
             logger.LogInformation("Fetching status by ID: {Id}", id);
             var status = await statusService.GetByIdAsync(id);
-            if (status == null)
-            {
-                logger.LogWarning("Status not found with ID: {Id}", id);
-                return NotFound();
-            }
 
             return Ok(status);
         }
@@ -46,11 +42,6 @@ namespace API.Controllers
         {
             logger.LogInformation("Fetching status details by ID: {Id}", id);
             var foundStatus = await statusService.GetDetailsByIdAsync(id);
-            if (foundStatus is null)
-            {
-                logger.LogWarning("Status not found with ID: {Id}", id);
-                return NotFound("Status not found");
-            }
 
             return Ok(foundStatus);
         }
@@ -62,6 +53,7 @@ namespace API.Controllers
             var addedStatus = await statusService.AddAsync(statusToAdd);
 
             logger.LogInformation("Status created successfully");
+
             return CreatedAtAction(nameof(GetById), new { id = addedStatus.StatusId }, addedStatus);
         }
 
@@ -70,29 +62,21 @@ namespace API.Controllers
         {
             logger.LogInformation("Updating status with ID: {Id}", statusToUpdate.StatusId);
             var updatedStatus = await statusService.UpdateAsync(statusToUpdate);
-            if (updatedStatus == null)
-            {
-                logger.LogWarning("Status not found with ID: {Id}", statusToUpdate.StatusId);
-                return NotFound();
-            }
 
             logger.LogInformation("Status updated successfully");
+
             return Ok(updatedStatus);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
             logger.LogInformation("Deleting status with ID: {Id}", id);
-            var isDeleted = await statusService.DeleteAsync(id);
-            if (!isDeleted)
-            {
-                logger.LogWarning("Status not found with ID: {Id}", id);
-                return NotFound();
-            }
+            statusService.DeleteAsync(id);
 
-            logger.LogInformation("Status deleted successfully");
-            return NoContent();
+            logger.LogInformation("Status with ID {Id} deleted", id);
+
+            return Ok("Status successfully deleted");
         }
     }
 }

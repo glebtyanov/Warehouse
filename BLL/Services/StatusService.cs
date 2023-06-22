@@ -3,6 +3,7 @@ using BLL.DTO.Adding;
 using BLL.DTO.Plain;
 using DAL.Entities;
 using DAL.UnitsOfWork;
+using BLL.Exceptions;
 
 namespace BLL.Services
 {
@@ -24,14 +25,24 @@ namespace BLL.Services
             return statusesToMap.Select(mapper.Map<StatusPlainDTO>).ToList();
         }
 
-        public async Task<StatusPlainDTO?> GetByIdAsync(int id)
+        public async Task<StatusPlainDTO> GetByIdAsync(int id)
         {
-            return mapper.Map<StatusPlainDTO>(await unitOfWork.StatusRepository.GetByIdAsync(id));
+            var foundProduct = mapper.Map<StatusPlainDTO>(await unitOfWork.StatusRepository.GetByIdAsync(id));
+
+            if (foundProduct is null)
+                throw new NotFoundException("Status not found");
+
+            return foundProduct;
         }
 
-        public async Task<StatusDetailsDTO?> GetDetailsByIdAsync(int id)
+        public async Task<StatusDetailsDTO> GetDetailsByIdAsync(int id)
         {
-            return mapper.Map<StatusDetailsDTO>(await unitOfWork.StatusRepository.GetDetailsAsync(id));
+            var foundProduct = mapper.Map<StatusDetailsDTO>(await unitOfWork.StatusRepository.GetDetailsAsync(id));
+
+            if (foundProduct is null)
+                throw new NotFoundException("Status not found");
+
+            return foundProduct;
         }
 
         public async Task<StatusPlainDTO> AddAsync(StatusAddingDTO statusToAdd)
@@ -41,16 +52,24 @@ namespace BLL.Services
             return mapper.Map<StatusPlainDTO>(addedStatus);
         }
 
-        public async Task<StatusPlainDTO?> UpdateAsync(StatusPlainDTO statusToUpdate)
+        public async Task<StatusPlainDTO> UpdateAsync(StatusPlainDTO statusToUpdate)
         {
             var updatedStatus = await unitOfWork.StatusRepository.UpdateAsync(mapper.Map<Status>(statusToUpdate));
 
-            return mapper.Map<StatusPlainDTO?>(updatedStatus);
+            if (updatedStatus is null)
+                throw new NotFoundException("Status not found");
+
+            return mapper.Map<StatusPlainDTO>(updatedStatus);
         }
 
-        public async Task<bool> DeleteAsync(int statusId)
+        public async void DeleteAsync(int statusId)
         {
-            return await unitOfWork.StatusRepository.DeleteAsync(statusId);
+            var isDeleted = await unitOfWork.StatusRepository.DeleteAsync(statusId);
+
+            if(!isDeleted)
+                throw new NotFoundException("Status not found");
+
+            return;
         }
     }
 }

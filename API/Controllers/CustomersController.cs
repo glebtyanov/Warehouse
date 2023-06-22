@@ -26,6 +26,7 @@ namespace API.Controllers
         {
             logger.LogInformation("Retrieving all customers");
             var customers = await customerService.GetAllAsync();
+
             return Ok(customers);
         }
 
@@ -35,11 +36,6 @@ namespace API.Controllers
         {
             logger.LogInformation("Retrieving customer with ID {Id}", id);
             var foundCustomer = await customerService.GetByIdAsync(id);
-            if (foundCustomer is null)
-            {
-                logger.LogWarning("Customer with ID {Id} not found", id);
-                return NotFound("Customer not found");
-            }
 
             return Ok(foundCustomer);
         }
@@ -50,11 +46,6 @@ namespace API.Controllers
         {
             logger.LogInformation("Retrieving customer details for ID {Id}", id);
             var foundCustomer = await customerService.GetDetailsByIdAsync(id);
-            if (foundCustomer is null)
-            {
-                logger.LogWarning("Customer with ID {Id} not found", id);
-                return NotFound("Customer not found");
-            }
 
             return Ok(foundCustomer);
         }
@@ -67,6 +58,7 @@ namespace API.Controllers
             var addedCustomer = await customerService.AddAsync(customerToAdd);
 
             logger.LogInformation("Customer with ID {Id} added", addedCustomer.CustomerId);
+
             return Ok(addedCustomer);
         }
 
@@ -76,28 +68,19 @@ namespace API.Controllers
         {
             logger.LogInformation("Updating customer with ID {Id}", customerToUpdate.CustomerId);
             var updatedCustomer = await customerService.UpdateAsync(customerToUpdate);
-            if (updatedCustomer is null)
-            {
-                logger.LogWarning("Customer with ID {Id} not found", customerToUpdate.CustomerId);
-                return NotFound("Customer not found");
-            }
 
             return Ok(updatedCustomer);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "CEO, Manager")]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
             logger.LogInformation("Deleting customer with ID {Id}", id);
-            var isDeleteSuccessful = await customerService.DeleteAsync(id);
-            if (!isDeleteSuccessful)
-            {
-                logger.LogWarning("Customer with ID {Id} not found", id);
-                return NotFound("Customer not found");
-            }
+            customerService.DeleteAsync(id);
 
-            logger.LogInformation("Customer with ID {Id} deleted successfully", id);
+            logger.LogInformation("Customer with ID {Id} deleted", id);
+
             return Ok("Customer successfully deleted");
         }
     }
