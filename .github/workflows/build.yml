@@ -35,4 +35,5 @@ jobs:
       if: success()
       uses: peter-evans/repository-dispatch@v2
       with:
-        event-type: trigger-workflow-2
+        event-type: trigger-workflow-sonar
+        token: ${{ secrets.PAT }}
