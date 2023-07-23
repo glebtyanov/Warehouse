@@ -29,8 +29,8 @@ jobs:
     - name: Publish built solution as an artifact
       uses: actions/upload-artifact@v3
       with:
-        name: built-solution
-        path: .
+        name: built-solution-${{ github.sha }}
+        path: ./build-solutions
     - name: Trigger next workflow
       if: success()
       uses: peter-evans/repository-dispatch@v2
