@@ -32,8 +32,7 @@ jobs:
       - name: Download built solution artifact
         uses: actions/download-artifact@v3
         with:
-          name: built-solution
-          path: ./built-solution
+          name: built-solution-${{ github.sha }}
       - name: Install SonarCloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         shell: powershell
