@@ -30,9 +30,10 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: built-solution
+        path: .
     - name: Trigger next workflow
       if: success()
       uses: peter-evans/repository-dispatch@v2
       with:
-        event-type: trigger-workflow-sonar
+        event-type: Sonar analysis
         token: ${{ secrets.PAT }}
