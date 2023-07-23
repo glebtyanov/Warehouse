@@ -1,7 +1,7 @@
 name: SonarCloud
 on:
   repository_dispatch:
-    types: [trigger-workflow-sonar]
+    types: [Sonar analysis]
     
 jobs:
   build:
