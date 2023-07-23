@@ -30,7 +30,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: built-solution-${{ github.sha }}
-        path: ./build-solutions
+        path: .
     - name: Trigger next workflow
       if: success()
       uses: peter-evans/repository-dispatch@v2
