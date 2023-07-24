@@ -1,7 +1,9 @@
 name: SonarCloud
 on:
-  repository_dispatch:
-    types: [Sonar analysis]
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
     
 jobs:
   build:
