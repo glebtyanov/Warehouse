@@ -3,10 +3,6 @@ on:
   repository_dispatch:
     types: [Sonar analysis]
     
-defaults:
-  run:
-    working-directory: WarehouseManagementService
-    
 jobs:
   build:
     name: Build and analyze
