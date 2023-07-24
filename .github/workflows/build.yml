@@ -35,4 +35,4 @@ jobs:
       uses: peter-evans/repository-dispatch@v2
       with:
         event-type: Sonar analysis
-        token: ${{ secrets.PAT }}
+        token: ${{ GITHUB_TOKEN }}
