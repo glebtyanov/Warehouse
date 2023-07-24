@@ -42,7 +42,7 @@ jobs:
         shell: powershell
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"glebtyanov_Warehouse" /o:"tyanovs" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-          dotnet restore ./WarehouseManagementService.Warehouse.sln
-          dotnet build --no-restore ./WarehouseManagementService.Warehouse.sln
-          dotnet test --no-build --verbosity normal ./WarehouseManagementService.Warehouse.sln
+          dotnet restore ./WarehouseManagementService/Warehouse.sln
+          dotnet build --no-restore ./WarehouseManagementService/Warehouse.sln
+          dotnet test --no-build --verbosity normal ./WarehouseManagementService/Warehouse.sln
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
